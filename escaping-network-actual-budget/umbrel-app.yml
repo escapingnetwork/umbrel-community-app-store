@@ -1,5 +1,6 @@
 manifestVersion: 1
 id: escaping-network-actual-budget
+icon: https://svgur.com/i/xuX.svg
 category: finance
 name: Actual Budget
 version: "23.9.0"
@@ -15,9 +16,9 @@ repo: https://github.com/actualbudget/actual
 support: https://github.com/actualbudget/actual/issues
 port: 5006
 gallery:
-  - 1.jpg
-  - 2.jpg
-  - 3.jpg
+  - https://actualbudget.org/img/homepage/actual-main-budget.png
+  - https://actualbudget.org/img/homepage/actual-main-transaction.png
+  - https://actualbudget.org/img/homepage/actual-report-cash-flow.png
 path: ""
 defaultUsername: ""
 defaultPassword: ""
