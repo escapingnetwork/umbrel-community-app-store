@@ -1,5 +1,6 @@
 manifestVersion: 1
 id: escaping-network-urbit
+icon: https://getumbrel.github.io/umbrel-apps-gallery/urbit/icon.svg
 category: networking
 name: Urbit
 version: "v2.12"
@@ -25,9 +26,9 @@ repo: https://github.com/mopfel-winrux/urbit-umbrel
 support: https://github.com/mopfel-winrux/urbit-umbrel/issues
 port: 8090
 gallery:
-  - 1.jpg
-  - 2.jpg
-  - 3.jpg
+  - https://getumbrel.github.io/umbrel-apps-gallery/urbit/1.jpg
+  - https://getumbrel.github.io/umbrel-apps-gallery/urbit/2.jpg
+  - https://getumbrel.github.io/umbrel-apps-gallery/urbit/3.jpg
 path: /launch
 defaultUsername: umbrel
 deterministicPassword: true
