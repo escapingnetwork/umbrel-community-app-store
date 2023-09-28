@@ -1,5 +1,5 @@
 manifestVersion: 1
-id: frigate
+id: escaping-network-frigate
 icon: https://raw.githubusercontent.com/blakeblackshear/frigate/d11c1a20668bca48413fe37895d905b854bc675b/web/images/favicon.svg
 category: automation
 name: Frigate

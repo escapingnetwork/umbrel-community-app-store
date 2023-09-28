@@ -1,0 +1,27 @@
+manifestVersion: 1
+id: escaping-network-plausible
+icon: https://raw.githubusercontent.com/blakeblackshear/frigate/d11c1a20668bca48413fe37895d905b854bc675b/web/images/favicon.svg
+category: automation
+name: Plausible Analytics
+version: "2.0"
+tagline: Easy to use and privacy-friendly Google Analytics alternative.
+description: >-
+  Plausible is intuitive, lightweight and open source web analytics.
+  No cookies and fully compliant with GDPR, CCPA and PECR.
+  Made and hosted in the EU, powered by European-owned cloud infrastructure.
+releaseNotes: ""
+developer:  Plausible
+website: https://plausible.io/
+repo: https://github.com/plausible/analytics
+support: https://github.com/plausible/analytics/issues
+port: 5000
+gallery:
+  - https://frigate.video/images/ui.jpg
+  - https://frigate.video/images/detection.jpg
+  - https://frigate.video/images/events-mobile-cropped.jpg
+path: ""
+defaultUsername: ""
+defaultPassword: ""
+dependencies: []
+submitter: ~dibref-labter
+submission: ""
