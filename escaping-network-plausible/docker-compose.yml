@@ -4,7 +4,7 @@ services:
   app_proxy:
     environment:
       APP_HOST: escaping-network-plausible_web_1
-      APP_PORT: 8000
+      APP_PORT: 9090
 
   mail:
     image: bytemark/smtp
