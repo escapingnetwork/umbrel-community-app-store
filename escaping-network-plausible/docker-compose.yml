@@ -39,7 +39,7 @@ services:
       - plausible_db
       - plausible_events_db
       - mail
-    env_file:
+    environmen:
       - BASE_URL=http://umbrel.local:8000
       - SECRET_KEY_BASE=${APP_PASSWORD}
 
