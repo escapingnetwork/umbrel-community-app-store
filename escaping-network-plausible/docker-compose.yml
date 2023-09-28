@@ -40,7 +40,7 @@ services:
       - plausible_events_db
       - mail
     environment:
-      - BASE_URL=http://umbrel.local:8000
+      - BASE_URL=http://umbrel.local:9090
       - SECRET_KEY_BASE=${APP_PASSWORD}
 
 volumes:
