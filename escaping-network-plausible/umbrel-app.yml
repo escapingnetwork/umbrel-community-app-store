@@ -1,7 +1,7 @@
 manifestVersion: 1
 id: escaping-network-plausible
-icon: https://raw.githubusercontent.com/blakeblackshear/frigate/d11c1a20668bca48413fe37895d905b854bc675b/web/images/favicon.svg
-category: automation
+icon: https://svgshare.com/i/y30.svg
+category: analytics
 name: Plausible Analytics
 version: "2.0"
 tagline: Easy to use and privacy-friendly Google Analytics alternative.
@@ -14,11 +14,11 @@ developer:  Plausible
 website: https://plausible.io/
 repo: https://github.com/plausible/analytics
 support: https://github.com/plausible/analytics/issues
-port: 5000
+port: 8000
 gallery:
-  - https://frigate.video/images/ui.jpg
-  - https://frigate.video/images/detection.jpg
-  - https://frigate.video/images/events-mobile-cropped.jpg
+  - https://plausible.io/assets/images/privacy-focused-web-analytics.png
+  - https://i.imgur.com/fUtZ3qJ.png
+  - https://i.imgur.com/fUtZ3qJ.png
 path: ""
 defaultUsername: ""
 defaultPassword: ""
