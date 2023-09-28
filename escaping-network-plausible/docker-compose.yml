@@ -41,6 +41,7 @@ services:
       - mail
     environment:
       - BASE_URL=http://escaping-network-plausible_web_1:9090
+      - PORT=9090
       - SECRET_KEY_BASE=${APP_PASSWORD}
 
 volumes:
