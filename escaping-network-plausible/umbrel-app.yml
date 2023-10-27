@@ -14,7 +14,7 @@ developer:  Plausible
 website: https://plausible.io/
 repo: https://github.com/plausible/analytics
 support: https://github.com/plausible/analytics/issues
-port: 8000
+port: 9090
 gallery:
   - https://plausible.io/assets/images/privacy-focused-web-analytics.png
   - https://i.imgur.com/fUtZ3qJ.png

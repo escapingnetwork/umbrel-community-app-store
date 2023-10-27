@@ -4,7 +4,7 @@ services:
   app_proxy:
     environment:
       APP_HOST: escaping-network-plausible_web_1
-      APP_PORT: 8000
+      APP_PORT: 9090
 
   mail:
     image: bytemark/smtp
@@ -39,8 +39,9 @@ services:
       - plausible_db
       - plausible_events_db
       - mail
-    env_file:
-      - BASE_URL=http://umbrel.local:8000
+    environment:
+      - BASE_URL=http://escaping-network-plausible_web_1:9090
+      - PORT=9090
       - SECRET_KEY_BASE=${APP_PASSWORD}
 
 volumes:
