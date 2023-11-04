@@ -7,7 +7,7 @@ services:
       PROXY_AUTH_ADD: "false"
   
   manager:
-    image: mopfelwinrux/urbit-umbrel:v2.12@sha256:e5902c942c31d610f0829649e0cf0ca4099e04f3e042b93e7b52230dd79c18d0
+    image: escaping/urbit-umbrel:latest@sha256:9540a1d2b22044f7e4fbb13858d9a67ecac704babaf6ab7648744b524f55e584
     ports:
       - "34343:34343"
     volumes:
