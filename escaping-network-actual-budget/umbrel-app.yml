@@ -3,13 +3,13 @@ id: escaping-network-actual-budget
 icon: https://svgur.com/i/xuX.svg
 category: finance
 name: Actual Budget
-version: "23.12.0"
+version: "24.1.0"
 tagline: A super fast and privacy-focused app for managing your finances.
 description: >-
   Actual Budget uses the well proven and much loved Envelope Budgeting methodology.
   You own your data and can do whatever you want with it. 
   Featuring multi-device sync, optional end-to-end encryption and so much more.
-releaseNotes: https://actualbudget.org/docs/releases/#23120
+releaseNotes: https://actualbudget.org/docs/releases/#2410
 developer:  James Long
 website: https://actualbudget.org/
 repo: https://github.com/actualbudget/actual
