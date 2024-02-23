@@ -1,5 +1,5 @@
 manifestVersion: 1
-id: frigate
+id: escaping-network-frigate
 category: automation
 name: Frigate
 version: "0.12.1-367d724"
