@@ -3,7 +3,7 @@ version: "3.7"
 services:
   app_proxy:
     environment:
-      APP_HOST: frigate_web_1
+      APP_HOST: escaping-network-frigate_web_1
       APP_PORT: 5004
       PROXY_AUTH_ADD: "false"
   
