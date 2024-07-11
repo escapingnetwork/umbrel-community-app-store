@@ -8,7 +8,7 @@ services:
       PROXY_AUTH_ADD: "false"
   
   web:
-    image: actualbudget/actual-server:24.1.0@sha256:32ecfd1812380e29348c418dcd983f4c85cdd96c70ed1344577c7d474c959273
+    image: actualbudget/actual-server:24.7.0@sha256:12cb8d9b8e653b66e185360e980c08e90f8c1f40bf4fb34dcb90eb270329d996
     restart: on-failure
     stop_grace_period: 1m
     volumes:
