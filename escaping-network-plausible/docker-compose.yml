@@ -36,7 +36,7 @@ services:
       - plausible_db
       - plausible_events_db
     environment:
-      - BASE_URL=http://escaping-network-plausible_plausible_1:9091
+      - BASE_URL=http://umbrel.local:9091
       - PORT=9091
       - SECRET_KEY_BASE=${APP_PLAUSIBLE_SECRET_KEY}
       - TOTP_VAULT_KEY=${APP_PLAUSIBLE_VAULT_KEY}
