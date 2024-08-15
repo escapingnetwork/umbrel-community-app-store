@@ -37,7 +37,7 @@ services:
       - plausible_events_db
     environment:
       - BASE_URL=http://escaping-network-plausible_web_1:9091
-      - PORT=9090
+      - PORT=9091
       - SECRET_KEY_BASE=${APP_PASSWORD}
 
 volumes:
