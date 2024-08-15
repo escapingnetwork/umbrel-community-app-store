@@ -39,6 +39,7 @@ services:
       - BASE_URL=http://escaping-network-plausible_plausible_1:9091
       - PORT=9091
       - SECRET_KEY_BASE=${APP_PASSWORD}
+      - TOTP_VAULT_KEY=${APP_PASSWORD}
 
 volumes:
   db-data:
