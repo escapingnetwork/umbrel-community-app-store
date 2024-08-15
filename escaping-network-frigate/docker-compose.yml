@@ -16,9 +16,10 @@ services:
     devices:
      - /dev:/dev
     volumes:
+    volumes:
       - /etc/localtime:/etc/localtime:ro
-      - ${APP_DATA_DIR}/config.yml:/config/config.yml
-      - ${APP_DATA_DIR}/storage:/media/frigate
+      - ${APP_DATA_DIR}/data/config:/config
+      - ${APP_DATA_DIR}/data/storage:/media/frigate
       - type: tmpfs # Optional: 1GB of memory, reduces SSD/SD Card wear
         target: /tmp/cache
         tmpfs:
