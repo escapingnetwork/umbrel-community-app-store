@@ -3,7 +3,7 @@ version: "3.7"
 services:
   app_proxy:
     environment:
-      APP_HOST: escaping-network-plausible_web_1
+      APP_HOST: escaping-network-plausible_plausible_1
       APP_PORT: 9091
 
   plausible_db:
@@ -36,7 +36,7 @@ services:
       - plausible_db
       - plausible_events_db
     environment:
-      - BASE_URL=http://escaping-network-plausible_web_1:9091
+      - BASE_URL=http://escaping-network-plausible_plausible_1:9091
       - PORT=9091
       - SECRET_KEY_BASE=${APP_PASSWORD}
 
