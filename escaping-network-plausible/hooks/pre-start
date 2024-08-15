@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+SECRET_KEY="$(openssl rand -base64 48)"
+VAULT_KEY="$(openssl rand -base64 32)"
