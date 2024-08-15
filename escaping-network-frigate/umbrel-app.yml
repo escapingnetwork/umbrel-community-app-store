@@ -1,5 +1,5 @@
+manifestVersion: 1
 id: escaping-network-frigate
-category: automation
 name: Frigate
 version: "0.14.0"
 tagline: A complete and local NVR
