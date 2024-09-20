@@ -1,11 +1,19 @@
 version: "3.7"
 
 services:
-  # app_proxy:
-  #   environment:
-  #     APP_HOST: simplex-server_server_1
-  #     APP_PORT: 80
-  #     PROXY_AUTH_ADD: "false"
+  app_proxy:
+    environment:
+      APP_HOST: simplex-server_web_1
+      APP_PORT: 80
+      PROXY_AUTH_ADD: "false"
+
+  web:
+    image: caddy:2.8.4@sha256:c6a5f2835a53fd9e2b5e0623dc7ebf0f89c163c21c05cbbc35e4ea31ff424417
+    restart: on-failure
+    cap_add:
+      - NET_ADMIN
+    volumes:
+      - ${APP_DATA_DIR}/data/smp/logs/www:/srv
 
   smp-server:
     image: simplexchat/smp-server:v6@sha256:8ee921410249683e9d013d1de9706a2b51713916de8dbe104c2c540e62dba24d
