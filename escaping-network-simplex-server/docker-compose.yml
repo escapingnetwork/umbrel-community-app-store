@@ -13,7 +13,7 @@ services:
     cap_add:
       - NET_ADMIN
     volumes:
-      - ${APP_DATA_DIR}/data/smp/logs/www:/srv
+      - ${APP_DATA_DIR}/data/smp/logs/www:/var/www/html
 
   smp-server:
     image: simplexchat/smp-server:v6@sha256:8ee921410249683e9d013d1de9706a2b51713916de8dbe104c2c540e62dba24d
