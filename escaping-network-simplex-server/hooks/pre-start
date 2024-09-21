@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
-# Delay booting Elements until the RPC and P2P Tor Hidden Services are ready
+# Delay booting Simplex Server until the Tor Hidden Services are ready
 
-HIDDEN_SERVICE_FILE="${TOR_DATA_DIR}/app-${APP_ID}/hostname"
+HIDDEN_SERVICE_FILE="${TOR_DATA_DIR}/app-${APP_ID}-smp/hostname"
 
 if [[ -f "${HIDDEN_SERVICE_FILE}" ]]; then
 	exit

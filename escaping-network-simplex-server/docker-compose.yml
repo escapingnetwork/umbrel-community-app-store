@@ -21,10 +21,8 @@ services:
     restart: on-failure
     stop_grace_period: 1m
     environment:
-      ADDR: ${APP_SIMPLEX_SERVER_HIDDEN_SERVICE}
+      ADDR: ${APP_SIMPLEX_SERVER_SMP_HIDDEN_SERVICE}
       PASS: ${APP_PASSWORD}
-    ports:
-      - 5223:5223
     volumes:
       - ${APP_DATA_DIR}/data/smp/config:/etc/opt/simplex:z
       - ${APP_DATA_DIR}/data/smp/logs:/var/opt/simplex:z
@@ -34,10 +32,8 @@ services:
     restart: on-failure
     stop_grace_period: 1m
     environment:
-      ADDR: ${APP_SIMPLEX_SERVER_HIDDEN_SERVICE}
+      ADDR: ${APP_SIMPLEX_SERVER_XFTP_HIDDEN_SERVICE}
       QUOTA: "2GB"
-    ports:
-      - 5443:443
     volumes:
       - ${APP_DATA_DIR}/data/xftp/config:/etc/opt/simplex-xftp:z
       - ${APP_DATA_DIR}/data/xftp/logs:/var/opt/simplex-xftp:z
