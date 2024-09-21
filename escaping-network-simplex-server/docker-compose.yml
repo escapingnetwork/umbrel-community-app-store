@@ -3,7 +3,7 @@ version: "3.7"
 services:
   app_proxy:
     environment:
-      APP_HOST: simplex-server_web_1
+      APP_HOST: escaping-network-simplex-server_web_1
       APP_PORT: 80
       PROXY_AUTH_ADD: "false"
 
@@ -13,7 +13,8 @@ services:
     cap_add:
       - NET_ADMIN
     volumes:
-      - ${APP_DATA_DIR}/data/smp/logs/www:/srv
+      - ${APP_DATA_DIR}/Caddyfile:/etc/caddy/Caddyfile
+      - ${APP_DATA_DIR}/data/smp/logs/www:/var/www/html
 
   smp-server:
     image: simplexchat/smp-server:v6@sha256:8ee921410249683e9d013d1de9706a2b51713916de8dbe104c2c540e62dba24d
