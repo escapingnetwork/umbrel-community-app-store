@@ -9,4 +9,4 @@ HiddenServiceDir /data/app-$APP_ID-smp
 HiddenServicePort $APP_SIMPLEX_SERVER_SMP_PORT escaping-network-simplex-server_smp-server_1:$APP_SIMPLEX_SERVER_SMP_PORT
 # xftp-server hidden service host directory and port mappings
 HiddenServiceDir /data/app-$APP_ID-xftp
-HiddenServicePort $APP_SIMPLEX_SERVER_XFTP_PORT  escaping-network-simplex-server_xftp-server_1:$APP_SIMPLEX_SERVER_XFTP_PORT
+HiddenServicePort $APP_SIMPLEX_SERVER_XFTP_PORT escaping-network-simplex-server_xftp-server_1:$APP_SIMPLEX_SERVER_XFTP_PORT
