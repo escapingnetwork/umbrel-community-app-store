@@ -8,7 +8,7 @@ services:
       PROXY_AUTH_ADD: "false"
 
   smp-server:
-    image: simplexchat/smp-server:v6@sha256:8ee921410249683e9d013d1de9706a2b51713916de8dbe104c2c540e62dba24d
+    image: escaping/smp-server:v6.2.0@sha256:1aa62b5c81fa408c9221036ad3d6a1dbdd79c9e3095344330d476a47bac430f6
     restart: on-failure
     stop_grace_period: 1m
     environment:
@@ -21,7 +21,7 @@ services:
       - ${APP_DATA_DIR}/data/smp/logs:/var/opt/simplex:z
       
   xftp-server:
-    image: simplexchat/xftp-server:v6@sha256:fb813c9071776c6c11836977c556f221eb3c5320a35ba24e93594216916f1d3c
+    image: escaping/xftp-server:v6.2.0@sha256:27a052216db8beac62b2a649c1f2374c60ea283ac0e36190e574a8c2ab739ae3
     restart: on-failure
     stop_grace_period: 1m
     environment:
