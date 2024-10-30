@@ -4,7 +4,7 @@ services:
   app_proxy:
     environment:
       APP_HOST: escaping-network-simplex-server_smp-server_1
-      APP_PORT: 8000
+      APP_PORT: 9092
       PROXY_AUTH_ADD: "false"
 
   smp-server:
