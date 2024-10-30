@@ -19,6 +19,7 @@ services:
     volumes:
       - ${APP_DATA_DIR}/data/smp/config:/etc/opt/simplex:z
       - ${APP_DATA_DIR}/data/smp/logs:/var/opt/simplex:z
+      - ${APP_DATA_DIR}/smp-server.ini:/etc/opt/simplex/smp-server.ini:ro
       
   xftp-server:
     image: escaping/xftp-server:v6.2.0@sha256:27a052216db8beac62b2a649c1f2374c60ea283ac0e36190e574a8c2ab739ae3
