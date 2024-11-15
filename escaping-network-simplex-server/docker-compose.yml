@@ -12,7 +12,7 @@ services:
     restart: on-failure
     stop_grace_period: 1m
     environment:
-      ADDR: ${APP_SIMPLEX_SERVER_SMP_HIDDEN_SERVICE}
+      ADDR: ${DEVICE_HOSTNAME}
       PASS: ${APP_PASSWORD}
     ports:
       - 5223:5223
@@ -26,7 +26,7 @@ services:
     restart: on-failure
     stop_grace_period: 1m
     environment:
-      ADDR: ${APP_SIMPLEX_SERVER_XFTP_HIDDEN_SERVICE}
+      ADDR: ${DEVICE_HOSTNAME}
       QUOTA: "2GB"
     ports:
       - 5443:443
@@ -34,13 +34,3 @@ services:
       - ${APP_DATA_DIR}/data/xftp/config:/etc/opt/simplex-xftp:z
       - ${APP_DATA_DIR}/data/xftp/logs:/var/opt/simplex-xftp:z
       - ${APP_DATA_DIR}/data/xftp/files:/srv/xftp:z
-
-  tor:
-    image: getumbrel/tor:0.4.7.8@sha256:2ace83f22501f58857fa9b403009f595137fa2e7986c4fda79d82a8119072b6a
-    user: "1000:1000"
-    restart: on-failure
-    volumes:
-      - ${APP_DATA_DIR}/torrc:/etc/tor/torrc:ro
-      - ${TOR_DATA_DIR}:/data
-    environment:
-      HOME: "/tmp"
