@@ -4,7 +4,7 @@ services:
   app_proxy:
     environment:
       APP_HOST: escaping-network-simplex-server_smp-server_1
-      APP_PORT: 443
+      APP_PORT: 9092
       PROXY_AUTH_ADD: "false"
 
   smp-server:
@@ -16,6 +16,7 @@ services:
       PASS: ${APP_PASSWORD}
     ports:
       - 5223:5223
+      - 9092:443
     volumes:
       - ${APP_DATA_DIR}/data/smp/config:/etc/opt/simplex:z
       - ${APP_DATA_DIR}/data/smp/logs:/var/opt/simplex:z
