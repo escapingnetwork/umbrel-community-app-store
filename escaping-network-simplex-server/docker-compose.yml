@@ -4,7 +4,7 @@ services:
   app_proxy:
     environment:
       APP_HOST: escaping-network-simplex-server_smp-server_1
-      APP_PORT: 9092
+      APP_PORT: 443
       PROXY_AUTH_ADD: "false"
 
   smp-server:
@@ -18,7 +18,6 @@ services:
       - 5223:5223
     volumes:
       - ${APP_DATA_DIR}/data/smp/config:/etc/opt/simplex:z
-      - ${APP_DATA_DIR}/smp-server.ini:/etc/opt/simplex/smp-server.ini:z
       - ${APP_DATA_DIR}/data/smp/logs:/var/opt/simplex:z
   xftp-server:
     image: escaping/xftp-server:v6.2.0@sha256:27a052216db8beac62b2a649c1f2374c60ea283ac0e36190e574a8c2ab739ae3
