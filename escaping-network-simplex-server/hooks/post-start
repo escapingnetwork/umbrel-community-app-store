@@ -81,7 +81,7 @@ mv "$TEMP_FILE" "$INI_FILE"
 chown 1000:1000 "$INI_FILE"
 
 # Move the modified INI file to CONFIG_DIR
-cp "$INI_FILE" "$CONFIG_DIR/"
+mv "$INI_FILE" "$SMP_CONFIG_DIR/"
 
 "${UMBREL_ROOT}/scripts/app" restart "${APP_ID}" &
 
