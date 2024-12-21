@@ -1,1 +1,47 @@
-#!/usr/bin/env bash
+#!/bin/bash
+
+
+
+APP_DATA_DIR="$(readlink -f "$(dirname "${BASH_SOURCE[0]}")/..")/data"
+CONFIG_DIR="${APP_DATA_DIR}/smp/config"
+
+# Path to your ini file
+ini_file="${APP_DATA_DIR}/smp-server.ini"
+
+# Temporary file to store the processed ini content
+temp_file=$(mktemp)
+
+# Read the ini file and replace placeholders
+while IFS='=' read -r key value
+do
+    # Check if the value contains one of the specific placeholders
+    if [[ $value =~ \$\{APP_PASSWORD\} ]] || [[ $value =~ \$\{ADDR\} ]]; then
+        case "$value" in
+            *\$\{APP_PASSWORD\}*)
+                if [[ -v APP_PASSWORD ]]; then
+                    echo "$key=${APP_PASSWORD}" >> "$temp_file"
+                else
+                    echo "Warning: APP_PASSWORD not set for $key" >&2
+                    echo "$key=$value" >> "$temp_file"
+                fi
+                ;;
+            *\$\{DEVICE_HOSTNAME\}*)
+                if [[ -v ADDR ]]; then
+                    echo "$key=${DEVICE_HOSTNAME}" >> "$temp_file"
+                else
+                    echo "Warning: ADDR not set for $key" >&2
+                    echo "$key=$value" >> "$temp_file"
+                fi
+                ;;
+        esac
+    else
+        echo "$key=$value" >> "$temp_file"
+    fi
+done < "$ini_file"
+
+# Now you can use the temp_file with your updated configuration
+# For example, to view the modified file:
+cat "$temp_file"
+
+# Clean up
+rm "$temp_file"
