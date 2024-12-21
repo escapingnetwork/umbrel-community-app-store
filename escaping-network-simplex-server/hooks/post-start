@@ -3,6 +3,12 @@
 APP_DATA_DIR="$(readlink -f "$(dirname "${BASH_SOURCE[0]}")/..")/data"
 CONFIG_DIR="${APP_DATA_DIR}/smp/config"
 
+# File from which to read a value (example)
+FINGERPRINT_FILE="${CONFIG_DIR}/fingerprint"
+
+# Read the value from VALUE_FILE into a variable
+FINGERPRINT=$(cat "$FINGERPRINT_FILE")
+
 # Path to your ini file
 INI_FILE="$(readlink -f "$(dirname "${BASH_SOURCE[0]}")/..")/smp-server.ini"
 
@@ -35,6 +41,8 @@ done < "$INI_FILE"
 
 # Replace the original file with the modified one
 mv "$TEMP_FILE" "$INI_FILE"
+
+
 
 # Change ownership of the INI file to user ID 1000 and group ID 1000
 chown 1000:1000 "$INI_FILE"
