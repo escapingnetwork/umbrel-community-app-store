@@ -8,6 +8,36 @@ XFTP_CONFIG_DIR="${APP_DATA_DIR}/xftp/config"
 SMP_FINGERPRINT_FILE="${SMP_CONFIG_DIR}/fingerprint"
 XFTP_FINGERPRINT_FILE="${XFTP_CONFIG_DIR}/fingerprint"
 
+# Maximum number of checks before giving up
+MAX_CHECKS=10
+
+# Time to wait between checks (in seconds)
+WAIT_TIME=5
+
+# Counter for checks
+CHECK_COUNT=0
+
+while [ ! -f "$SMP_FINGERPRINT_FILE" ] && [ $CHECK_COUNT -lt $MAX_CHECKS ]; do
+    echo "File $SMP_FINGERPRINT_FILE does not exist. Waiting $WAIT_TIME seconds..."
+    sleep $WAIT_TIME
+    ((CHECK_COUNT++))
+done
+
+# Maximum number of checks before giving up
+MAX_CHECKS=10
+
+# Time to wait between checks (in seconds)
+WAIT_TIME=5
+
+# Counter for checks
+CHECK_COUNT=0
+
+while [ ! -f "$XFTP_FINGERPRINT_FILE" ] && [ $CHECK_COUNT -lt $MAX_CHECKS ]; do
+    echo "File $XFTP_FINGERPRINT_FILE does not exist. Waiting $WAIT_TIME seconds..."
+    sleep $WAIT_TIME
+    ((CHECK_COUNT++))
+done
+
 # Read the value from VALUE_FILE into a variable
 SMP_FINGERPRINT=$(cat "$SMP_FINGERPRINT_FILE")
 XFTP_FINGERPRINT=$(cat "$XFTP_FINGERPRINT_FILE")
