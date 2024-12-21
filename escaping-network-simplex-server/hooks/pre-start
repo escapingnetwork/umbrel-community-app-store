@@ -6,7 +6,7 @@ APP_DATA_DIR="$(readlink -f "$(dirname "${BASH_SOURCE[0]}")/..")/data"
 CONFIG_DIR="${APP_DATA_DIR}/smp/config"
 
 # Path to your ini file
-ini_file="${APP_DATA_DIR}/smp-server.ini"
+ini_file="${CONFIG_DIR}/smp-server.ini"
 
 # Temporary file to store the processed ini content
 temp_file=$(mktemp)
