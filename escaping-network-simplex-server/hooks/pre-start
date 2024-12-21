@@ -6,42 +6,36 @@ APP_DATA_DIR="$(readlink -f "$(dirname "${BASH_SOURCE[0]}")/..")/data"
 CONFIG_DIR="${APP_DATA_DIR}/smp/config"
 
 # Path to your ini file
-ini_file="${CONFIG_DIR}/smp-server.ini"
+INI_FILE="${CONFIG_DIR}/smp-server.ini"
 
-# Temporary file to store the processed ini content
-temp_file=$(mktemp)
+# Check if the INI file exists
+if [ ! -f "$INI_FILE" ]; then
+    echo "Error: $INI_FILE does not exist."
+    exit 1
+fi
 
-# Read the ini file and replace placeholders
-while IFS='=' read -r key value
+# Temporary file to write changes
+TEMP_FILE=$(mktemp)
+
+# Read each line of the INI file
+while IFS= read -r line
 do
-    # Check if the value contains one of the specific placeholders
-    if [[ $value =~ \$\{APP_PASSWORD\} ]] || [[ $value =~ \$\{ADDR\} ]]; then
-        case "$value" in
-            *\$\{APP_PASSWORD\}*)
-                if [[ -v APP_PASSWORD ]]; then
-                    echo "$key=${APP_PASSWORD}" >> "$temp_file"
-                else
-                    echo "Warning: APP_PASSWORD not set for $key" >&2
-                    echo "$key=$value" >> "$temp_file"
-                fi
-                ;;
-            *\$\{DEVICE_HOSTNAME\}*)
-                if [[ -v ADDR ]]; then
-                    echo "$key=${DEVICE_HOSTNAME}" >> "$temp_file"
-                else
-                    echo "Warning: ADDR not set for $key" >&2
-                    echo "$key=$value" >> "$temp_file"
-                fi
-                ;;
-        esac
+    # Replace placeholders with their environment variables if they exist
+    if [[ $line =~ \$\{([A-Za-z0-9_]+)\} ]]; then
+        var_name="${BASH_REMATCH[1]}"
+        if [[ -v "$var_name" ]]; then
+            new_value="${!var_name}"
+            echo "${line/\$\{${var_name}\}/$new_value}" >> "$TEMP_FILE"
+        else
+            echo "Warning: Environment variable $var_name not set. Line unchanged." >&2
+            echo "$line" >> "$TEMP_FILE"
+        fi
     else
-        echo "$key=$value" >> "$temp_file"
+        echo "$line" >> "$TEMP_FILE"
     fi
-done < "$ini_file"
+done < "$INI_FILE"
 
-# Now you can use the temp_file with your updated configuration
-# For example, to view the modified file:
-cat "$temp_file"
+# Replace the original file with the modified one
+mv "$TEMP_FILE" "$INI_FILE"
 
-# Clean up
-rm "$temp_file"
+echo "Environment variables in $INI_FILE have been replaced."
