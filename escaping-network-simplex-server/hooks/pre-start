@@ -6,7 +6,7 @@ APP_DATA_DIR="$(readlink -f "$(dirname "${BASH_SOURCE[0]}")/..")/data"
 CONFIG_DIR="${APP_DATA_DIR}/smp/config"
 
 # Path to your ini file
-INI_FILE=""$(readlink -f "$(dirname "${BASH_SOURCE[0]}")/..")/smp-server.ini"
+INI_FILE="$(readlink -f "$(dirname "${BASH_SOURCE[0]}")/..")/smp-server.ini"
 
 # Check if the INI file exists
 if [ ! -f "$INI_FILE" ]; then
