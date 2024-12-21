@@ -1,13 +1,18 @@
 #!/bin/bash
 
 APP_DATA_DIR="$(readlink -f "$(dirname "${BASH_SOURCE[0]}")/..")/data"
-CONFIG_DIR="${APP_DATA_DIR}/smp/config"
+SMP_CONFIG_DIR="${APP_DATA_DIR}/smp/config"
+XFTP_CONFIG_DIR="${APP_DATA_DIR}/xftp/config"
 
 # File from which to read a value (example)
-FINGERPRINT_FILE="${CONFIG_DIR}/fingerprint"
+SMP_FINGERPRINT_FILE="${SMP_CONFIG_DIR}/fingerprint"
+XFTP_FINGERPRINT_FILE="${XFTP_CONFIG_DIR}/fingerprint"
 
 # Read the value from VALUE_FILE into a variable
-FINGERPRINT=$(cat "$FINGERPRINT_FILE")
+SMP_FINGERPRINT=$(cat "$SMP_FINGERPRINT_FILE")
+XFTP_FINGERPRINT=$(cat "$XFTP_FINGERPRINT_FILE")
+
+SERVER_DIR="smp://${SMP_FINGERPRINT}:${APP_PASSWORD}@${DEVICE_HOSTNAME},xftp://${XFTP_FINGERPRINT}@${DEVICE_HOSTNAME}"
 
 # Path to your ini file
 INI_FILE="$(readlink -f "$(dirname "${BASH_SOURCE[0]}")/..")/smp-server.ini"
