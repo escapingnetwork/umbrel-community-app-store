@@ -6,7 +6,7 @@ APP_DATA_DIR="$(readlink -f "$(dirname "${BASH_SOURCE[0]}")/..")/data"
 CONFIG_DIR="${APP_DATA_DIR}/smp/config"
 
 # Path to your ini file
-INI_FILE="${CONFIG_DIR}/smp-server.ini"
+INI_FILE=""$(readlink -f "$(dirname "${BASH_SOURCE[0]}")/..")/smp-server.ini"
 
 # Check if the INI file exists
 if [ ! -f "$INI_FILE" ]; then
@@ -37,5 +37,12 @@ done < "$INI_FILE"
 
 # Replace the original file with the modified one
 mv "$TEMP_FILE" "$INI_FILE"
+
+# Change ownership of the INI file to user ID 1000 and group ID 1000
+chown 1000:1000 "$INI_FILE"
+
+
+# Move the modified INI file to CONFIG_DIR
+mv "$INI_FILE" "$CONFIG_DIR/"
 
 echo "Environment variables in $INI_FILE have been replaced."
