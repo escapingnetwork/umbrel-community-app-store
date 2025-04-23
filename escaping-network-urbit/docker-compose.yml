@@ -7,7 +7,7 @@ services:
       PROXY_AUTH_ADD: "false"
   
   manager:
-    image: escaping/urbit-umbrel:latest@sha256:a048778a79261790bd7baafa3cda09bf1297aa3370dee450025a5e3eb6d0253b
+    image: escaping/urbit-umbrel:latest@sha256:142e30980411705e595644a488953b75d687ba71ab12a8135e10cdcf74acaa5e
     ports:
       - "34343:34343"
     volumes:
