@@ -3,7 +3,7 @@ id: escaping-network-urbit
 icon: https://getumbrel.github.io/umbrel-apps-gallery/urbit/icon.svg
 category: networking
 name: Urbit
-version: "v3.0"
+version: "v3.2"
 tagline: Run Urbit on your Umbrel
 description: >-
   Urbit is a personal server for self-sovereign personal & networked
