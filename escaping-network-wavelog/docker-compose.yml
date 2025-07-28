@@ -14,7 +14,6 @@ services:
     volumes:
       - ${APP_DATA_DIR}/dbdata:/var/lib/mysql
   wavelog-main:
-    container_name: wavelog-main_1
     depends_on:
       - wavelog-db
     image: ghcr.io/wavelog/wavelog:2.0.7@sha256:40721405cfbcbbb1e861c1713202f69cb3416b2753ed5cce02e5542235245eb4
