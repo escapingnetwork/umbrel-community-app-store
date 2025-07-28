@@ -2,10 +2,11 @@ version: "3.7"
 services:
   app_proxy:
     environment:
-      APP_HOST: escaping-network-wavelog_wavelog-main-1
+      APP_HOST: escaping-network-wavelog_wavelog-main_1
       APP_PORT: 8990
       PROXY_AUTH_ADD: "false"
   wavelog-db:
+    container_name: wavelog-db_1
     image: mariadb:11.4@sha256:sha256:39596f079862334be04f4231664862e55d4febe54309cc62f750f2297de85b06
     environment:
       MARIADB_RANDOM_ROOT_PASSWORD: yes
@@ -15,6 +16,9 @@ services:
     volumes:
       - ${APP_DATA_DIR}/dbdata:/var/lib/mysql
   wavelog-main:
+    container_name: wavelog-main_1
+    depends_on:
+      - wavelog-db_1
     image: ghcr.io/wavelog/wavelog:2.0.7@sha256:40721405cfbcbbb1e861c1713202f69cb3416b2753ed5cce02e5542235245eb4
     volumes:
       - ${APP_DATA_DIR}/config:/var/www/html/application/config/docker
