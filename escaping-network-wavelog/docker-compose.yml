@@ -21,11 +21,12 @@ services:
       CI_ENV: docker
     image: ghcr.io/wavelog/wavelog:2.0.7@sha256:40721405cfbcbbb1e861c1713202f69cb3416b2753ed5cce02e5542235245eb4
     volumes:
-      - ${APP_DATA_DIR}/backup:/var/www/html/backup
-      - ${APP_DATA_DIR}/config:/var/www/html/application/config/docker
-      - ${APP_DATA_DIR}/logs:/var/www/html/application/logs
-      - ${APP_DATA_DIR}/updates:/var/www/html/updates
-      - ${APP_DATA_DIR}/uploads:/var/www/html/uploads
-      - ${APP_DATA_DIR}/userdata:/var/www/html/userdata
-      - ${APP_DATA_DIR}/eqsl:/var/www/html/images/eqsl_card_images
+      - wavelog-config:/var/www/html/application/config/docker
+      - wavelog-uploads:/var/www/html/uploads
+      - wavelog-userdata:/var/www/html/userdata
       
+volumes:
+  wavelog-dbdata:
+  wavelog-uploads:
+  wavelog-userdata:
+  wavelog-config:
