@@ -14,7 +14,6 @@ services:
       MARIADB_PASSWORD: wavelog
     volumes:
       - ${APP_DATA_DIR}/dbdata:/var/lib/mysql
-    restart: unless-stopped
   wavelog-main:
     image: ghcr.io/wavelog/wavelog:2.0.7@sha256:40721405cfbcbbb1e861c1713202f69cb3416b2753ed5cce02e5542235245eb4
     volumes:
