@@ -1,14 +1,12 @@
 manifestVersion: 1
 id: escaping-network-wavelog
+icon: https://raw.githubusercontent.com/wavelog/wavelog/main/assets/img/logo.png
+category: utilities
 name: Wavelog
 version: "2.0.7"
 tagline: Amateur radio logging software
 description: Wavelog is an open-source web-based application for amateur radio operators to log and manage their contacts (QSOs). It supports features like QSL management, awards tracking, and integration with services like QRZ and LoTW.
-category: Utilities
-icon: https://raw.githubusercontent.com/wavelog/wavelog/main/assets/img/logo.png
-screenshots:
-  - https://raw.githubusercontent.com/wavelog/wavelog/main/assets/img/screenshot1.png
-  - https://raw.githubusercontent.com/wavelog/wavelog/main/assets/img/screenshot2.png
+releaseNotes: First Release.
 developer: Wavelog Team
 website: https://github.com/wavelog/wavelog
 repo: https://github.com/wavelog/wavelog
@@ -19,7 +17,7 @@ gallery:
   - https://raw.githubusercontent.com/wavelog/wavelog/main/assets/img/screenshot2.png
   - https://raw.githubusercontent.com/wavelog/wavelog/main/assets/img/screenshot3.png
 path: ""
-defaultUsername: ""
+defaultUsername: "" 
 defaultPassword: ""
 dependencies: []
 submitter: ~dibref-labter
