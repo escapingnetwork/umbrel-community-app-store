@@ -17,14 +17,10 @@ services:
     restart: unless-stopped
 
   wavelog-main:
-    container_name: wavelog-main
     image: ghcr.io/wavelog/wavelog:2.0.7@sha256:40721405cfbcbbb1e861c1713202f69cb3416b2753ed5cce02e5542235245eb4
     depends_on:
       - escaping-network_wavelog-db
-    environment:
-      CI_ENV: docker
     volumes:
       - ${APP_DATA_DIR}/config:/var/www/html/application/config/docker
       - ${APP_DATA_DIR}/uploads:/var/www/html/uploads
       - ${APP_DATA_DIR}/userdata:/var/www/html/userdata
-    restart: unless-stopped
