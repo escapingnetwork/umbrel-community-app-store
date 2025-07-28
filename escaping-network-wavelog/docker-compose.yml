@@ -2,7 +2,7 @@ version: "3.7"
 services:
   app_proxy:
     environment:
-      APP_HOST: escaping-network_wavelog-main
+      APP_HOST: escaping-network-wavelog_wavelog-main-1
       APP_PORT: 8990
       PROXY_AUTH_ADD: "false"
   wavelog-db:
@@ -15,11 +15,8 @@ services:
     volumes:
       - ${APP_DATA_DIR}/dbdata:/var/lib/mysql
     restart: unless-stopped
-
   wavelog-main:
     image: ghcr.io/wavelog/wavelog:2.0.7@sha256:40721405cfbcbbb1e861c1713202f69cb3416b2753ed5cce02e5542235245eb4
-    depends_on:
-      - escaping-network_wavelog-db
     volumes:
       - ${APP_DATA_DIR}/config:/var/www/html/application/config/docker
       - ${APP_DATA_DIR}/uploads:/var/www/html/uploads
