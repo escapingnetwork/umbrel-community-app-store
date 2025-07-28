@@ -12,9 +12,8 @@ services:
       MARIADB_USER: wavelog
       MARIADB_PASSWORD: wavelog
     volumes:
-      - ${APP_DATA_DIR}/dbdata:/var/lib/mysql
+      - wavelog-dbdata:/var/lib/mysql
   wavelog-main:
-    user: "1000:1000"
     depends_on:
       - wavelog-db
     environment:
