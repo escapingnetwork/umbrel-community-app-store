@@ -7,12 +7,11 @@ services:
       PROXY_AUTH_ADD: "false"
   
   manager:
-    image: escaping/urbit-umbrel:latest@sha256:142e30980411705e595644a488953b75d687ba71ab12a8135e10cdcf74acaa5e
+    image: escaping/urbit-umbrel:latest@sha256:4050577d58d43d106f3e71885314fb7e8b4473e7fae34f09383214c8bd0fd222
     ports:
       - "34343:34343"
     volumes:
       - ${APP_DATA_DIR}/piers:/data/piers
       - ${APP_DATA_DIR}/keys:/data/keys
     environment:
-      FLASK_APP: app
       APP_PASSWORD: ${APP_PASSWORD}
