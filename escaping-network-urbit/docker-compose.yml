@@ -3,13 +3,14 @@ services:
   app_proxy:
     environment:
       APP_HOST: escaping-network-urbit_manager_1
-      APP_PORT: 8090
+      APP_PORT: 8091
       PROXY_AUTH_ADD: "false"
   
   manager:
     image: escaping/urbit-umbrel:latest@sha256:4050577d58d43d106f3e71885314fb7e8b4473e7fae34f09383214c8bd0fd222
     ports:
       - "34343:34343"
+      - "8091:8090"
     volumes:
       - ${APP_DATA_DIR}/piers:/data/piers
       - ${APP_DATA_DIR}/keys:/data/keys
