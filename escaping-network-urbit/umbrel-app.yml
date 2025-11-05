@@ -24,7 +24,7 @@ website: https://github.com/mopfel-winrux/urbit-umbrel
 dependencies: []
 repo: https://github.com/mopfel-winrux/urbit-umbrel
 support: https://github.com/mopfel-winrux/urbit-umbrel/issues
-port: 8090
+port: 8091
 gallery:
   - https://getumbrel.github.io/umbrel-apps-gallery/urbit/1.jpg
   - https://getumbrel.github.io/umbrel-apps-gallery/urbit/2.jpg
