@@ -2,7 +2,7 @@ manifestVersion: 1
 id: escaping-network-simplex-chat
 category: developer
 name: SimpleX Gateway
-version: "0.1.1"
+version: "0.1.2"
 tagline: Headless SimpleX Chat daemon for Hermes Agent and bots
 description: >-
   Runs SimpleX Chat as a private, headless daemon with the official JSON WebSocket API exposed on the internal Docker network.
@@ -19,18 +19,18 @@ description: >-
   SimpleX provides state-of-the-art metadata resistance — no phone numbers, emails, or persistent user IDs.
 
 releaseNotes: >-
-  0.1.1: Robust gateway fixes so the WebSocket API is reliably reachable by other apps (e.g. Hermes Agent).
+  0.1.2: Dashboard now available immediately (even during first-boot daemon init).
 
-  - Fixed socat proxy startup order + added readiness wait + auto-restart for the proxy (the core "escaping network" fix)
-  - Corrected all internal Docker hostnames to escaping-network-simplex-chat_app_1 (exports, dashboard, docs, proxy config)
-  - Fixed docker exec examples to use the correct data dir (-d /data/simplex)
-  - Improved entrypoint logging and reliability for the JSON WS daemon + proxy
+  - Web server on :8080 is started right after container start so the Umbrel "Open"
+    button and app_proxy no longer get "connection refused" while the simplex-chat
+    daemon does first-time bot profile creation or recovers from transient crashes.
+  - Fixed DB detection for simplex-chat v6.5.3+ (now looks for simplex_chat.db /
+    simplex_agent.db instead of the old simplex_v1_chat.db name). This prevents
+    repeated create attempts against the wrong data directory.
+  - More logging around daemon restarts ("divide by zero" etc.).
 
-  0.1.0 (initial):
-  - Packages simplex-chat CLI as a reliable daemon
-  - socat-based proxy so other containers can connect
-  - Auto-creates a bot profile on first start
-  - Web dashboard with Hermes setup instructions
+  0.1.1: Robust gateway fixes...
+  (see previous release notes for the socat/hostname work)
 
 developer: Escaping Network
 website: https://github.com/escapingnetwork
