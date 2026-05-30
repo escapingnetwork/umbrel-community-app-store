@@ -37,16 +37,24 @@ socat TCP-LISTEN:${WS_PORT},fork,reuseaddr,bind=0.0.0.0 \
       TCP:127.0.0.1:${WS_PORT} &
 
 # Start a background process that keeps restarting the simplex-chat daemon
-# (with auto-migration confirmation). This keeps the daemon resilient.
+# with exponential backoff. This reduces log spam when the binary hits
+# transient crashes (like the current "divide by zero" in v6.5.2.0).
 (
   echo "[entrypoint] Starting simplex-chat daemon (with auto-restart)..."
+  RESTART_DELAY=5
   while true; do
       yes y | TERM=dumb unbuffer -p gosu simplex /usr/local/bin/simplex-chat \
           -d "${DATA_DIR}" \
           -p ${WS_PORT} || true
 
-      echo "[entrypoint] simplex-chat exited. Restarting in 5 seconds..."
-      sleep 5
+      echo "[entrypoint] simplex-chat exited. Restarting in ${RESTART_DELAY}s..."
+      sleep $RESTART_DELAY
+
+      # Exponential backoff, max 60s
+      RESTART_DELAY=$((RESTART_DELAY * 2))
+      if [ $RESTART_DELAY -gt 60 ]; then
+          RESTART_DELAY=60
+      fi
   done
 ) &
 
