@@ -19,6 +19,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     dumb-init \
     file \
     gosu \
+    bsdutils \
     && rm -rf /var/lib/apt/lists/*
 
 # Create non-root user for better security
