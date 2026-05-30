@@ -30,7 +30,7 @@ website: https://github.com/escapingnetwork
 dependencies: []
 repo: https://github.com/escapingnetwork/umbrel-community-app-store
 support: https://github.com/escapingnetwork/umbrel-community-app-store/issues
-port: 8080
+port: 8090
 gallery: []
 path: ""
 defaultUsername: ""
