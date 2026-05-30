@@ -19,9 +19,23 @@ This app is part of the Escaping Network community app store.
 
 2. Search for **SimpleX Relay** and install.
 
+## Important: Set ADDR before starting
+
+The SMP and XFTP servers **require** the `ADDR` environment variable to be set to your Tailscale MagicDNS name (or domain).
+
+**Before the first start**, edit the app's environment:
+
+1. In Umbrel → SimpleX Relay → Advanced → Environment variables
+2. Set `ADDR` to your Tailscale name, e.g.:
+   ```
+   ADDR=umbrel.yourname.ts.net
+   ```
+
+Without this, the containers will refuse to start with the error you saw.
+
 ## First-time Setup (Important)
 
-After installing:
+After setting `ADDR` and installing:
 
 1. Open the app.
 2. Use the **Initialization Wizard** in the dashboard (recommended), or run the helper script via Umbrel Terminal:
@@ -31,7 +45,7 @@ cd ~/umbrel/app-data/escaping-network-simplex-relay
 ./scripts/init-relay.sh
 ```
 
-When asked for hostname, use your **Tailscale MagicDNS** name (e.g. `umbrel.yourname.ts.net`) for the best private experience.
+When asked for hostname, use the **same Tailscale MagicDNS** name you set in `ADDR`.
 
 ## Recommended: Use with Tailscale
 

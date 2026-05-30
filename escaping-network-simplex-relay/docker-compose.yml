@@ -11,6 +11,10 @@ services:
     image: simplexchat/smp-server:latest
     restart: unless-stopped
     stop_grace_period: 30s
+    environment:
+      # IMPORTANT: Set this to your Tailscale MagicDNS name (e.g. umbrel.yourname.ts.net)
+      # or your public domain. This is required for the SMP server to generate its address.
+      ADDR: ${ADDR:-change-me-to-your-tailscale-name.ts.net}
     volumes:
       - ${APP_DATA_DIR}/smp/config:/etc/opt/simplex
       - ${APP_DATA_DIR}/smp/state:/var/opt/simplex
@@ -19,6 +23,9 @@ services:
     image: simplexchat/xftp-server:latest
     restart: unless-stopped
     stop_grace_period: 30s
+    environment:
+      # IMPORTANT: Set this to your Tailscale MagicDNS name (same as SMP)
+      ADDR: ${ADDR:-change-me-to-your-tailscale-name.ts.net}
     volumes:
       - ${APP_DATA_DIR}/xftp/config:/etc/opt/simplex-xftp
       - ${APP_DATA_DIR}/xftp/state:/var/opt/simplex-xftp
