@@ -1,0 +1,21 @@
+# Build artifacts
+*.log
+
+# Local data (never commit real chat databases)
+data/
+simplex_v1_*.db
+*.db-shm
+*.db-wal
+
+# Docker
+docker-compose.override.yml
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.idea/
+.vscode/
+*.swp
+*~

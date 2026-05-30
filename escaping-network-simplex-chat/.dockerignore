@@ -1,0 +1,19 @@
+# Development / git
+.git
+.gitignore
+README.md
+LICENSE
+
+# Umbrel metadata (not needed inside container)
+umbrel-app.yml
+exports.sh
+docker-compose.yml
+
+# Local data
+data/
+*.db
+
+# IDE
+.idea/
+.vscode/
+*.swp

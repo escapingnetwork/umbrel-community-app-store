@@ -1,0 +1,19 @@
+# Data volumes (never commit real relay state or keys)
+data/
+smp/
+xftp/
+*.db
+*.log
+*.bak
+
+# Build / local
+*.log
+build/
+
+# OS / Editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*~

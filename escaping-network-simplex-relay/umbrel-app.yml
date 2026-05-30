@@ -1,0 +1,39 @@
+manifestVersion: 1
+id: escaping-network-simplex-relay
+category: developer
+name: SimpleX Relay
+version: "0.1.0"
+tagline: Self-hosted SMP + XFTP relays for SimpleX, optimized for private Tailscale access
+description: >-
+  Run your own SimpleX message (SMP) and file (XFTP) relays on Umbrel.
+
+  Designed for private, metadata-resistant self-hosting. The recommended way to use this app is with the official Tailscale app on Umbrel — no public ports or domain required.
+
+  Features:
+  - Official simplexchat/smp-server and xftp-server images
+  - Guided initialization wizard in the dashboard
+  - Exports relay addresses so other apps (e.g. SimpleX Gateway for Hermes) can easily use them (opt-in)
+  - Tailscale-first networking (works great with Umbrel's Tailscale app)
+  - Persistent configuration and state
+
+  Running your own relays gives you full control and removes dependency on public SimpleX infrastructure.
+
+releaseNotes: >-
+  Initial release.
+
+  - SMP server + XFTP server using official images
+  - Basic dashboard with status and initialization guidance
+  - Exports for integration with SimpleX Gateway / Hermes
+
+developer: Escaping Network
+website: https://github.com/escapingnetwork
+dependencies: []
+repo: https://github.com/escapingnetwork/umbrel-community-app-store
+support: https://github.com/escapingnetwork/umbrel-community-app-store/issues
+port: 8080
+gallery: []
+path: ""
+defaultUsername: ""
+defaultPassword: ""
+submitter: escapingnetwork
+submission: https://github.com/escapingnetwork/umbrel-community-app-store

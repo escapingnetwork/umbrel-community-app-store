@@ -1,0 +1,23 @@
+# Development
+.git
+.gitignore
+README.md
+*.md
+
+# Umbrel metadata
+umbrel-app.yml
+exports.sh
+docker-compose.yml
+Caddyfile
+
+# Data (never ship real state)
+data/
+smp/
+xftp/
+*.db
+*.log
+
+# IDE / OS
+.idea/
+.vscode/
+.DS_Store

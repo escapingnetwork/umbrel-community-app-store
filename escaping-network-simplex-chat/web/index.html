@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SimpleX Gateway • Umbrel</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Space+Grotesk:wght@500;600&amp;display=swap');
+        
+        :root {
+            --primary: #6366f1;
+        }
+        
+        body {
+            font-family: 'Inter', system_ui, sans-serif;
+        }
+        
+        .font-display {
+            font-family: 'Space Grotesk', 'Inter', sans-serif;
+            font-weight: 600;
+        }
+
+        .simplex-gradient {
+            background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .card {
+            transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), 
+                       box-shadow 0.2s cubic-bezier(0.4, 0.0, 0.2, 1);
+        }
+        
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+        }
+
+        .status-dot {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+
+        .code {
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+        }
+
+        .section-header {
+            font-size: 0.75rem;
+            letter-spacing: 0.05em;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+    </style>
+</head>
+<body class="bg-zinc-950 text-zinc-200">
+    <div class="max-w-5xl mx-auto px-6 py-10">
+        <!-- Header -->
+        <div class="flex items-center justify-between mb-10">
+            <div class="flex items-center gap-x-4">
+                <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center shadow-lg shadow-indigo-500/20">
+                    <i class="fa-solid fa-comments text-white text-3xl"></i>
+                </div>
+                <div>
+                    <div class="flex items-center gap-x-3">
+                        <h1 class="text-3xl font-display tracking-tighter">SimpleX Gateway</h1>
+                        <span class="inline-flex items-center rounded-full bg-emerald-500/10 px-3 py-1 text-xs font-medium text-emerald-400 ring-1 ring-inset ring-emerald-500/20">
+                            <i class="fa-solid fa-check mr-1.5 text-[10px]"></i>
+                            RUNNING
+                        </span>
+                    </div>
+                    <p class="text-zinc-500 text-sm">Headless daemon for Hermes Agent</p>
+                </div>
+            </div>
+            
+            <div class="hidden md:flex items-center gap-x-2 text-xs bg-zinc-900 border border-zinc-800 rounded-2xl px-4 py-2">
+                <div class="flex items-center gap-x-2">
+                    <div class="w-2 h-2 bg-emerald-400 rounded-full status-dot"></div>
+                    <span class="text-emerald-400 font-medium">Healthy</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Hero / Purpose -->
+        <div class="bg-zinc-900 border border-zinc-800 rounded-3xl p-8 mb-8">
+            <div class="max-w-2xl">
+                <div class="inline-flex items-center gap-x-2 text-indigo-400 text-sm font-semibold tracking-widest mb-3">
+                    <i class="fa-solid fa-robot"></i>
+                    <span>HERMES AGENT READY</span>
+                </div>
+                <h2 class="text-4xl font-display tracking-tighter leading-none mb-4">
+                    Private AI agent<br>messaging gateway
+                </h2>
+                <p class="text-xl text-zinc-400">
+                    This daemon runs <span class="font-medium text-white">SimpleX Chat</span> headlessly and exposes the official JSON WebSocket API so your Hermes Agent (or any bot) can send and receive messages with complete metadata privacy.
+                </p>
+            </div>
+        </div>
+
+        <!-- Connection Info -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+            <!-- For Hermes -->
+            <div class="card bg-zinc-900 border border-zinc-800 rounded-3xl p-7">
+                <div class="flex items-center gap-x-3 mb-5">
+                    <div class="w-9 h-9 rounded-2xl bg-violet-500/10 flex items-center justify-center">
+                        <i class="fa-solid fa-link text-violet-400"></i>
+                    </div>
+                    <div>
+                        <div class="section-header text-violet-400">Hermes Agent</div>
+                        <div class="font-semibold text-lg tracking-tight">Connection Details</div>
+                    </div>
+                </div>
+
+                <div class="space-y-5">
+                    <div>
+                        <div class="text-xs text-zinc-500 mb-1.5 font-medium">SIMPLEX_WS_URL (recommended)</div>
+                        <div class="bg-black border border-zinc-800 rounded-2xl p-4 font-mono text-sm break-all select-all text-emerald-300">
+                            ws://simplex-chat_app_1:5225
+                        </div>
+                        <div class="text-[10px] text-zinc-500 mt-1.5">Use this inside Umbrel (Docker network)</div>
+                    </div>
+
+                    <div class="pt-2 border-t border-zinc-800">
+                        <div class="text-xs text-zinc-500 mb-2 font-medium">Alternative (if using exports)</div>
+                        <div class="text-xs bg-zinc-950 border border-zinc-800 rounded-xl p-3 text-zinc-400">
+                            Check <span class="font-mono text-amber-300">exports.sh</span> for <span class="font-semibold">APP_SIMPLEX_CHAT_WS_URL</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Status -->
+            <div class="card bg-zinc-900 border border-zinc-800 rounded-3xl p-7">
+                <div class="flex items-center gap-x-3 mb-5">
+                    <div class="w-9 h-9 rounded-2xl bg-emerald-500/10 flex items-center justify-center">
+                        <i class="fa-solid fa-heartbeat text-emerald-400"></i>
+                    </div>
+                    <div>
+                        <div class="section-header text-emerald-400">Daemon Status</div>
+                        <div class="font-semibold text-lg tracking-tight">Running smoothly</div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4 text-sm">
+                    <div class="bg-zinc-950 border border-zinc-800 rounded-2xl px-4 py-3">
+                        <div class="text-zinc-500 text-xs mb-0.5">Profile</div>
+                        <div class="font-semibold">Hermes Gateway</div>
+                    </div>
+                    <div class="bg-zinc-950 border border-zinc-800 rounded-2xl px-4 py-3">
+                        <div class="text-zinc-500 text-xs mb-0.5">API Mode</div>
+                        <div class="font-semibold">WebSocket JSON</div>
+                    </div>
+                    <div class="bg-zinc-950 border border-zinc-800 rounded-2xl px-4 py-3">
+                        <div class="text-zinc-500 text-xs mb-0.5">Files</div>
+                        <div class="font-semibold text-emerald-400">Allowed</div>
+                    </div>
+                    <div class="bg-zinc-950 border border-zinc-800 rounded-2xl px-4 py-3">
+                        <div class="text-zinc-500 text-xs mb-0.5">Port (internal)</div>
+                        <div class="font-semibold font-mono">5225</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Hermes Setup Instructions -->
+        <div class="bg-zinc-900 border border-zinc-800 rounded-3xl p-8 mb-8">
+            <div class="flex items-start justify-between mb-6">
+                <div>
+                    <div class="section-header text-amber-400 mb-1">Quick Setup</div>
+                    <h3 class="text-2xl font-display tracking-tight">Configure Hermes Agent</h3>
+                </div>
+                <i class="fa-solid fa-arrow-right text-2xl text-zinc-700 mt-1"></i>
+            </div>
+
+            <div class="space-y-6">
+                <div class="flex gap-4">
+                    <div class="flex-shrink-0 w-7 h-7 rounded-full bg-zinc-800 flex items-center justify-center text-xs font-bold text-zinc-400">1</div>
+                    <div class="flex-1">
+                        <div class="font-semibold mb-1">Install Hermes Agent on Umbrel</div>
+                        <div class="text-sm text-zinc-400">Make sure the Hermes Agent app (or container) is running on the same Umbrel instance.</div>
+                    </div>
+                </div>
+
+                <div class="flex gap-4">
+                    <div class="flex-shrink-0 w-7 h-7 rounded-full bg-zinc-800 flex items-center justify-center text-xs font-bold text-zinc-400">2</div>
+                    <div class="flex-1">
+                        <div class="font-semibold mb-1.5">Set the WebSocket URL in Hermes</div>
+                        <div class="bg-black border border-zinc-800 text-sm rounded-2xl p-4 font-mono">
+                            SIMPLEX_WS_URL=ws://simplex-chat_app_1:5225
+                        </div>
+                        <div class="text-xs mt-2 text-zinc-400">You can also use the <span class="font-semibold text-amber-300">exports.sh</span> variable when Hermes supports it as a dependency.</div>
+                    </div>
+                </div>
+
+                <div class="flex gap-4">
+                    <div class="flex-shrink-0 w-7 h-7 rounded-full bg-zinc-800 flex items-center justify-center text-xs font-bold text-zinc-400">3</div>
+                    <div class="flex-1">
+                        <div class="font-semibold mb-1">Pair your agent (recommended)</div>
+                        <div class="text-sm text-zinc-400">
+                            Run <span class="font-mono bg-zinc-950 px-1.5 py-px rounded text-amber-300">hermes gateway pair</span> or use the setup wizard. 
+                            Hermes will message the gateway and receive a pairing code.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Advanced / Notes -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+            <div class="bg-zinc-900 border border-zinc-800 rounded-3xl p-6">
+                <div class="font-semibold mb-2 flex items-center gap-x-2">
+                    <i class="fa-solid fa-shield-halved text-zinc-400"></i>
+                    <span>Privacy</span>
+                </div>
+                <p class="text-zinc-400 text-sm leading-snug">
+                    All communication stays on your Umbrel. No phone numbers, emails, or persistent user IDs are exposed to the SimpleX network.
+                </p>
+            </div>
+            <div class="bg-zinc-900 border border-zinc-800 rounded-3xl p-6">
+                <div class="font-semibold mb-2 flex items-center gap-x-2">
+                    <i class="fa-solid fa-plug text-zinc-400"></i>
+                    <span>Multiple Clients</span>
+                </div>
+                <p class="text-zinc-400 text-sm leading-snug">
+                    The daemon supports multiple simultaneous connections (Hermes + debug tools + future agents).
+                </p>
+            </div>
+            <div class="bg-zinc-900 border border-zinc-800 rounded-3xl p-6">
+                <div class="font-semibold mb-2 flex items-center gap-x-2">
+                    <i class="fa-solid fa-terminal text-zinc-400"></i>
+                    <span>Debug</span>
+                </div>
+                <p class="text-zinc-400 text-sm leading-snug">
+                    Use Umbrel's Terminal app:<br>
+                    <span class="font-mono text-xs bg-black px-1.5 py-px rounded">docker exec -it simplex-chat_app_1 simplex-chat -d /data</span>
+                </p>
+            </div>
+        </div>
+
+        <div class="mt-10 text-center text-xs text-zinc-500">
+            Powered by <a href="https://simplex.chat" target="_blank" class="underline hover:text-zinc-400">SimpleX Chat</a> • 
+            Gateway for <a href="https://hermes-agent.nousresearch.com" target="_blank" class="underline hover:text-zinc-400">Hermes Agent</a> • 
+            Built for <a href="https://umbrel.com" target="_blank" class="underline hover:text-zinc-400">Umbrel</a>
+        </div>
+    </div>
+</body>
+</html>

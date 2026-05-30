@@ -1,0 +1,35 @@
+version: "3.7"
+
+services:
+  app_proxy:
+    environment:
+      # Points the Umbrel reverse proxy at our web dashboard
+      APP_HOST: escaping-network-simplex-chat_app_1
+      APP_PORT: "8080"
+      # No authentication required on the dashboard for now (it's read-only info)
+      PROXY_AUTH_ADD: "false"
+
+  app:
+    # For production, publish and pin a digest:
+    # image: ghcr.io/escapingnetwork/simplex-chat-daemon:latest@sha256:...
+    # For testing on your Umbrel you can also build locally and temporarily change to a local image or use build:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: on-failure
+    stop_grace_period: 30s
+    volumes:
+      - ${APP_DATA_DIR}/data:/data
+    environment:
+      # Passed through to entrypoint
+      SIMPLEX_DATA_DIR: /data
+    # We intentionally do NOT publish ports to the host.
+    # The WS gateway (5225) is only reachable from other containers on the Umbrel Docker network.
+    # The web UI (8080) is accessed via Umbrel's app_proxy.
+    networks:
+      - default
+
+networks:
+  default:
+    name: escaping-network-simplex-chat_default
+    driver: bridge

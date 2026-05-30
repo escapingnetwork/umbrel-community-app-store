@@ -1,0 +1,60 @@
+version: "3.7"
+
+services:
+  app_proxy:
+    environment:
+      APP_HOST: escaping-network-simplex-relay_web_1
+      APP_PORT: "8080"
+      PROXY_AUTH_ADD: "false"   # Dashboard is informational + has its own light auth later if needed
+
+  smp:
+    image: simplexchat/smp-server:latest
+    restart: unless-stopped
+    stop_grace_period: 30s
+    volumes:
+      - ${APP_DATA_DIR}/smp/config:/etc/opt/simplex
+      - ${APP_DATA_DIR}/smp/state:/var/opt/simplex
+    # Ports are intentionally not published to the host.
+    # Access via Tailscale (recommended) or manually exposed if desired.
+    networks:
+      - default
+
+  xftp:
+    image: simplexchat/xftp-server:latest
+    restart: unless-stopped
+    stop_grace_period: 30s
+    volumes:
+      - ${APP_DATA_DIR}/xftp/config:/etc/opt/simplex-xftp
+      - ${APP_DATA_DIR}/xftp/state:/var/opt/simplex-xftp
+      - ${APP_DATA_DIR}/xftp/files:/srv/xftp
+    networks:
+      - default
+
+  web:
+    # Go + HTMX dashboard with initialization wizard
+    # For production in the app store, publish the image and use:
+    # image: ghcr.io/escapingnetwork/simplex-relay-dashboard:latest@sha256:...
+    build:
+      context: ./dashboard
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    volumes:
+      # Mount config/state so the dashboard can read status and run init
+      - ${APP_DATA_DIR}/smp/config:/etc/opt/simplex
+      - ${APP_DATA_DIR}/smp/state:/var/opt/simplex
+      - ${APP_DATA_DIR}/xftp/config:/etc/opt/simplex-xftp
+      - ${APP_DATA_DIR}/xftp/state:/var/opt/simplex-xftp
+      - ${APP_DATA_DIR}/xftp/files:/srv/xftp
+    environment:
+      - PORT=8080
+      - APP_DATA_DIR=${APP_DATA_DIR}
+    depends_on:
+      - smp
+      - xftp
+    networks:
+      - default
+
+networks:
+  default:
+    name: escaping-network-simplex-relay_default
+    driver: bridge
