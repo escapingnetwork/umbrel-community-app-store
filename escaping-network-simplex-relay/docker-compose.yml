@@ -28,6 +28,8 @@ services:
       ADDR: ${ADDR:-change-me-to-your-tailscale-name.ts.net}
       # Storage quota for the XFTP server (e.g. 10gb, 50gb)
       QUOTA: ${QUOTA:-10gb}
+      # Optional password to allow uploading new files (leave empty to allow without password)
+      PASS: ${PASS:-}
     volumes:
       - ${APP_DATA_DIR}/xftp/config:/etc/opt/simplex-xftp
       - ${APP_DATA_DIR}/xftp/state:/var/opt/simplex-xftp
