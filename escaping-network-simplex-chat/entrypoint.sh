@@ -31,25 +31,27 @@ if [ ! -f "${DATA_DIR}/simplex_v1_chat.db" ]; then
     sleep 5
 fi
 
-# Start sidecar services (can run as root)
+# Start socat proxy in background
 echo "[entrypoint] Starting socat proxy on 0.0.0.0:${WS_PORT}..."
 socat TCP-LISTEN:${WS_PORT},fork,reuseaddr,bind=0.0.0.0 \
       TCP:127.0.0.1:${WS_PORT} &
 
+# Start a background process that keeps restarting the simplex-chat daemon
+# (with auto-migration confirmation). This keeps the daemon resilient.
+(
+  echo "[entrypoint] Starting simplex-chat daemon (with auto-restart)..."
+  while true; do
+      yes y | TERM=dumb unbuffer -p gosu simplex /usr/local/bin/simplex-chat \
+          -d "${DATA_DIR}" \
+          -p ${WS_PORT} || true
+
+      echo "[entrypoint] simplex-chat exited. Restarting in 5 seconds..."
+      sleep 5
+  done
+) &
+
+# Run the web dashboard in the foreground.
+# This is what keeps the container alive and allows the Umbrel proxy to connect.
 echo "[entrypoint] Starting web dashboard on 0.0.0.0:${WEB_PORT}..."
 cd /app/web
-python3 -m http.server "${WEB_PORT}" &
-
-# Run simplex-chat in a restart loop.
-# We pipe "y" to auto-confirm any database migration prompts
-# (the binary asks this when the DB schema is older than the binary).
-# Combined with unbuffer + TERM=dumb for headless Docker operation.
-echo "[entrypoint] Starting simplex-chat daemon (with auto-restart)..."
-while true; do
-    yes y | TERM=dumb unbuffer -p gosu simplex /usr/local/bin/simplex-chat \
-        -d "${DATA_DIR}" \
-        -p ${WS_PORT} || true
-
-    echo "[entrypoint] simplex-chat exited. Restarting in 5 seconds..."
-    sleep 5
-done
+exec python3 -m http.server "${WEB_PORT}"
