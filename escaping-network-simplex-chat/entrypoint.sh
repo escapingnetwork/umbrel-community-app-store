@@ -23,11 +23,12 @@ cd "${DATA_DIR}"
 # One-time bot profile creation (only if DB doesn't exist)
 if [ ! -f "${DATA_DIR}/simplex_v1_chat.db" ]; then
     echo "[entrypoint] No existing database found. Creating bot profile..."
-    TERM=dumb gosu simplex /usr/local/bin/simplex-chat \
-        -d "${DATA_DIR}" \
-        --create-bot-display-name "Hermes Gateway" \
-        --create-bot-allow-files || true
-    sleep 4
+    # Use 'script' here too, because the creation path can also trigger the terminal library
+    TERM=dumb script -q -c "gosu simplex /usr/local/bin/simplex-chat \
+        -d '${DATA_DIR}' \
+        --create-bot-display-name 'Hermes Gateway' \
+        --create-bot-allow-files" /dev/null || true
+    sleep 5
 fi
 
 # Start sidecar services (can run as root)
