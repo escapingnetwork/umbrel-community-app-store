@@ -8,11 +8,11 @@ services:
       PROXY_AUTH_ADD: "false"
 
   app:
-    # Fully pinned digest from GitHub Actions (multi-arch build after 6.5.3 + robust entrypoint)
-    image: ghcr.io/escapingnetwork/simplex-chat-daemon@sha256:1ed4ada9f0348e45dcd5da4d6632df0a4d34e1d90a1d2f7c26cb2d2ed61e1bfe
+    # Fully pinned digest from GitHub Actions (multi-arch). New robust entrypoint for reliable socat WS gateway proxy.
+    image: ghcr.io/escapingnetwork/simplex-chat-daemon@sha256:6b2c49e09e3e87929b44257c726d2d959208e55a48562965e9f62f072a7e6035
 
-    # Optional: tag + digest form (the sha- tag from the workflow run)
-    # image: ghcr.io/escapingnetwork/simplex-chat-daemon:sha-XXXX@sha256:1ed4ada9f0348e45dcd5da4d6632df0a4d34e1d90a1d2f7c26cb2d2ed61e1bfe
+    # Optional: tag + digest form (the sha- tag from the workflow run for this commit)
+    # image: ghcr.io/escapingnetwork/simplex-chat-daemon:sha-fa3522a@sha256:6b2c49e09e3e87929b44257c726d2d959208e55a48562965e9f62f072a7e6035
 
     restart: on-failure
     stop_grace_period: 30s
