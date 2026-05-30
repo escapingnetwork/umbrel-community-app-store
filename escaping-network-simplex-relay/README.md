@@ -46,29 +46,28 @@ This app exports the following variables so the companion **SimpleX Chat** (Gate
 - `APP_SIMPLEX_RELAY_SMP_ADDRESS`
 - `APP_SIMPLEX_RELAY_XFTP_ADDRESS`
 
+## Images
+
+The dashboard is automatically built and published by GitHub Actions to:
+
+`ghcr.io/escapingnetwork/simplex-relay-dashboard`
+
 ## Development / Local Testing
 
-The dashboard is built from `./dashboard` (Go + HTMX).
-
-To rebuild the dashboard image while testing:
+For local development you can build the dashboard yourself:
 
 ```bash
-docker compose build web
-docker compose up -d web
+docker build -t local/simplex-relay-dashboard:local ./dashboard
 ```
 
-## Publishing Images (for store releases)
+Then temporarily change the `image:` line in `docker-compose.yml`.
 
-Build and push the dashboard:
+## Releasing New Versions
 
-```bash
-cd dashboard
-docker buildx build --platform linux/amd64,linux/arm64 \
-  --tag ghcr.io/escapingnetwork/simplex-relay-dashboard:v0.1.0 \
-  --push .
-```
-
-Then update `docker-compose.yml` to use the published image + digest instead of `build:`.
+1. Push changes to the repo.
+2. GitHub Actions will build and push new images.
+3. Update the `image:` line in `docker-compose.yml` with the new tag + full digest from the workflow run.
+4. Commit and push the updated `docker-compose.yml`.
 
 ## Credits
 

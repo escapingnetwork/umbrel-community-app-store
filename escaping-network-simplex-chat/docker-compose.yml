@@ -8,15 +8,13 @@ services:
       PROXY_AUTH_ADD: "false"
 
   app:
-    # === PUBLISHED IMAGE VERSION (recommended) ===
-    # After running the GitHub Actions workflow, replace this with the actual digest
-    image: ghcr.io/escapingnetwork/simplex-chat-daemon:latest
-    # image: ghcr.io/escapingnetwork/simplex-chat-daemon:sha-abc1234@sha256:...
+    # Published by GitHub Actions on commit 30ba0f4
+    image: ghcr.io/escapingnetwork/simplex-chat-daemon:sha-30ba0f4
 
-    # === BUILD VERSION (only for local development) ===
-    # build:
-    #   context: .
-    #   dockerfile: Dockerfile
+    # For maximum reproducibility, pin the full digest.
+    # Go to https://github.com/escapingnetwork/packages/container/simplex-chat-daemon
+    # → Click the tag → Copy the full digest and use:
+    # image: ghcr.io/escapingnetwork/simplex-chat-daemon:sha-30ba0f4@sha256:REPLACE_WITH_FULL_DIGEST
 
     restart: on-failure
     stop_grace_period: 30s

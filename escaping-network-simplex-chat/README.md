@@ -42,26 +42,26 @@ The Relay app exports:
 docker exec -it escaping-network-simplex-chat_app_1 simplex-chat -d /data
 ```
 
+## Images
+
+The daemon image is automatically built and published by GitHub Actions to:
+
+`ghcr.io/escapingnetwork/simplex-chat-daemon`
+
 ## Development / Local Testing
 
-The main container is built from the included `Dockerfile`.
-
-Rebuild after changes:
+For local testing you can build it yourself:
 
 ```bash
-docker compose build
-docker compose up -d
+docker build -t local/simplex-chat-daemon:local .
 ```
 
-## Publishing the Image
+Then temporarily edit `docker-compose.yml` to use the local tag.
 
-```bash
-docker buildx build --platform linux/amd64,linux/arm64 \
-  --tag ghcr.io/escapingnetwork/simplex-chat-daemon:v0.1.0 \
-  --push .
-```
+## Releasing Updates
 
-Then pin the digest in `docker-compose.yml`.
+Push to the repo → GitHub Actions builds and publishes the new image.
+Then update the `image:` line in `docker-compose.yml` with the new digest and push the compose file.
 
 ## Credits
 
