@@ -26,6 +26,8 @@ services:
     environment:
       # IMPORTANT: Set this to your Tailscale MagicDNS name (same as SMP)
       ADDR: ${ADDR:-change-me-to-your-tailscale-name.ts.net}
+      # Storage quota for the XFTP server (e.g. 10gb, 50gb)
+      QUOTA: ${QUOTA:-10gb}
     volumes:
       - ${APP_DATA_DIR}/xftp/config:/etc/opt/simplex-xftp
       - ${APP_DATA_DIR}/xftp/state:/var/opt/simplex-xftp
