@@ -8,7 +8,7 @@ services:
       PROXY_AUTH_ADD: "false"
 
   app:
-    # Published by GitHub Actions (latest successful run on 70344ba)
+    # Published by GitHub Actions (latest successful run on 70344ba - permission/gosu fixes)
     image: ghcr.io/escapingnetwork/simplex-chat-daemon:sha-70344ba
 
     # For maximum reproducibility, pin the full digest.
