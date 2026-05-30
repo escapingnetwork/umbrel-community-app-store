@@ -4,10 +4,25 @@ set -euo pipefail
 # SimpleX Chat Daemon + Gateway Proxy + Web UI for Umbrel
 # Designed specifically as a gateway for Hermes Agent (Nous Research)
 
-# Use a subdirectory so database files are nicely namespaced inside the volume
+# Use a subdirectory so database files are nicely namespaced inside the volume.
+# Note: Recent simplex-chat versions sometimes create DBs at the parent level.
 DATA_DIR="${SIMPLEX_DATA_DIR:-/data}/simplex"
 WS_PORT=5225
 WEB_PORT=8080
+
+# Kill any leftover processes from previous failed/stuck create attempts.
+# The yes|unbuffer|gosu pipeline is fragile when the binary crashes ("divide by zero").
+cleanup_stuck_processes() {
+    echo "[entrypoint] Cleaning up any stuck create/daemon processes..."
+    pkill -f 'create-bot-display-name' 2>/dev/null || true
+    pkill -f 'unbuffer.*simplex-chat' 2>/dev/null || true
+    pkill -f 'yes y.*simplex-chat' 2>/dev/null || true
+    # Give them a moment to die
+    sleep 1
+    # Also kill any lingering simplex user processes that look stuck
+    pkill -u simplex 2>/dev/null || true
+    sleep 1
+}
 
 echo "=================================================="
 echo "  SimpleX Chat Daemon (Umbrel Gateway)"
@@ -21,8 +36,7 @@ chown -R simplex:simplex /data 2>/dev/null || true
 cd "${DATA_DIR}"
 
 # Start the web dashboard *early* in the background so the Umbrel "Open" button
-# (and app_proxy) can connect immediately. This prevents "connection refused"
-# while the (potentially slow or crashy) daemon + bot creation + port wait happens.
+# (and app_proxy) can connect immediately.
 echo "[entrypoint] Starting web dashboard early on 0.0.0.0:${WEB_PORT} (background)..."
 (
   cd /app/web
@@ -30,65 +44,64 @@ echo "[entrypoint] Starting web dashboard early on 0.0.0.0:${WEB_PORT} (backgrou
 ) &
 WEB_PID=$!
 
-# One-time bot profile creation (only if no modern DB exists).
-# Note: simplex-chat v6.5.3+ uses simplex_chat.db + simplex_agent.db (not the old simplex_v1_chat.db).
-if [ ! -f "${DATA_DIR}/simplex_chat.db" ] && [ ! -f "${DATA_DIR}/simplex_agent.db" ]; then
-    echo "[entrypoint] No existing database found. Creating bot profile..."
-    # Use unbuffer + TERM=dumb, and pipe "y" in case it ever prompts during creation.
-    yes y | TERM=dumb unbuffer -p gosu simplex /usr/local/bin/simplex-chat \
-        -d "${DATA_DIR}" \
-        --create-bot-display-name "Hermes Gateway" \
-        --create-bot-allow-files || true
-    sleep 3
+# Bot profile creation happens here (with strong protection).
+# We deliberately start the daemon loop *after* this block so the long
+# first-run migration doesn't cause concurrent DB access fights.
+
+# One-time bot profile creation — run in background with its own hard timeout.
+# This is the most reliable pattern we've found: the main script (and daemon loop)
+# never waits for it. The daemon loop itself is what actually makes the gateway usable.
+if [ ! -f "${DATA_DIR}/simplex_chat.db" ] && [ ! -f "${DATA_DIR}/simplex_agent.db" ] && \
+   [ ! -f "/data/simplex_chat.db" ] && [ ! -f "/data/simplex_agent.db" ]; then
+    (
+        echo "[entrypoint] Starting background bot profile creation (hard timeout)..."
+        cleanup_stuck_processes
+        set +e
+        timeout --kill-after=10 80 bash -c '
+            set -euo pipefail
+            yes y | TERM=dumb unbuffer -p gosu simplex /usr/local/bin/simplex-chat \
+                -d "'"${DATA_DIR}"'" \
+                --create-bot-display-name "Hermes Gateway" \
+                --create-bot-allow-files
+        ' || true
+        set -e
+        cleanup_stuck_processes
+        echo "[entrypoint] Background bot profile creation finished (best effort)."
+    ) &
 fi
 
-# Start a background process that keeps restarting the simplex-chat daemon
-# with exponential backoff. "divide by zero" and other transient crashes have
-# been observed even in 6.5.3 during certain startup paths.
-(
-  echo "[entrypoint] Starting simplex-chat daemon (with auto-restart)..."
-  RESTART_DELAY=5
-  while true; do
-      yes y | TERM=dumb unbuffer -p gosu simplex /usr/local/bin/simplex-chat \
-          -d "${DATA_DIR}" \
-          -p ${WS_PORT} || true
-
-      echo "[entrypoint] simplex-chat exited (divide by zero or other transient?). Restarting in ${RESTART_DELAY}s..."
-      sleep $RESTART_DELAY
-
-      # Exponential backoff, max 60s
-      RESTART_DELAY=$((RESTART_DELAY * 2))
-      if [ $RESTART_DELAY -gt 60 ]; then
-          RESTART_DELAY=60
-      fi
-  done
-) &
-
-# Wait (with timeout) for the daemon's localhost listener so we can bring up the
-# socat proxy for other containers. This no longer blocks the web UI.
-echo "[entrypoint] Waiting (max 45s) for simplex-chat to listen on 127.0.0.1:${WS_PORT}..."
-for i in {1..45}; do
-    if bash -c "echo > /dev/tcp/127.0.0.1/${WS_PORT}" 2>/dev/null; then
-        echo "[entrypoint] Daemon ready on 127.0.0.1:${WS_PORT}"
+# Wait (with timeout) for the daemon's listener.
+# We no longer assume it only binds to 127.0.0.1.
+echo "[entrypoint] Waiting (max 60s) for simplex-chat to listen on port ${WS_PORT}..."
+for i in {1..60}; do
+    if bash -c "echo > /dev/tcp/127.0.0.1/${WS_PORT}" 2>/dev/null || \
+       bash -c "echo > /dev/tcp/0.0.0.0/${WS_PORT}" 2>/dev/null; then
+        echo "[entrypoint] Daemon is listening on port ${WS_PORT}"
         break
     fi
     sleep 1
-    if [ "$i" -eq 45 ]; then
-        echo "[entrypoint] WARNING: Daemon port not detected after 45s. WS gateway may not be ready yet for other apps (Hermes etc.). Web UI is still available."
+    if [ "$i" -eq 60 ]; then
+        echo "[entrypoint] WARNING: No listener on port ${WS_PORT} after 60s."
     fi
 done
 
-# Start socat proxy in background (with auto-restart). This makes the WS API reachable
-# from other containers on the Docker network at ws://<container>:5225 (the "escaping" part).
-(
-  echo "[entrypoint] Starting socat proxy on 0.0.0.0:${WS_PORT} -> 127.0.0.1:${WS_PORT} (with auto-restart)..."
-  while true; do
-      socat TCP-LISTEN:${WS_PORT},fork,reuseaddr,bind=0.0.0.0 \
-            TCP:127.0.0.1:${WS_PORT},keepalive || true
-      echo "[entrypoint] socat proxy exited. Restarting in 2s..."
-      sleep 2
-  done
-) &
+# Start socat proxy *only if needed*.
+# If simplex-chat is already listening on 0.0.0.0:5225 (which happens in some versions/configs),
+# we skip the proxy to avoid "address already in use".
+if ss -tlnp 2>/dev/null | grep -q ":${WS_PORT}.*0.0.0.0" || \
+   netstat -tlnp 2>/dev/null | grep -q ":${WS_PORT}.*0.0.0.0"; then
+    echo "[entrypoint] simplex-chat is already listening on 0.0.0.0:${WS_PORT} — skipping socat proxy."
+else
+    echo "[entrypoint] Starting socat proxy on 0.0.0.0:${WS_PORT} -> 127.0.0.1:${WS_PORT} (with auto-restart)..."
+    (
+      while true; do
+          socat TCP-LISTEN:${WS_PORT},fork,reuseaddr,bind=0.0.0.0 \
+                TCP:127.0.0.1:${WS_PORT},keepalive || true
+          echo "[entrypoint] socat proxy exited. Restarting in 2s..."
+          sleep 2
+      done
+    ) &
+fi
 
 # Keep the container alive. The early web server is already running in background.
 # If it ever dies, fall back to exec'ing it again (should not happen).
