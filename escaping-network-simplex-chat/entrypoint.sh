@@ -38,7 +38,7 @@ socat TCP-LISTEN:${WS_PORT},fork,reuseaddr,bind=0.0.0.0 \
 
 # Start a background process that keeps restarting the simplex-chat daemon
 # with exponential backoff. This reduces log spam when the binary hits
-# transient crashes (like the current "divide by zero" in v6.5.2.0).
+# transient crashes (like the "divide by zero" in v6.5.2.0; we are now running 6.5.3).
 (
   echo "[entrypoint] Starting simplex-chat daemon (with auto-restart)..."
   RESTART_DELAY=5

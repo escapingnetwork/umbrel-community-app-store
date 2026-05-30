@@ -36,7 +36,7 @@ WORKDIR /app
 # Docker TARGETARCH: amd64 | arm64
 # Simplex release naming: x86_64 | aarch64
 ARG TARGETARCH
-ARG SIMPLEX_VERSION=6.5.2
+ARG SIMPLEX_VERSION=6.5.3
 
 # Download the correct prebuilt static binary for the target architecture
 RUN set -eux; \
