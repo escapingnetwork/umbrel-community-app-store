@@ -93,7 +93,9 @@ echo "[entrypoint] Waiting (max 60s) for simplex-chat to listen on port ${WS_POR
 for i in {1..60}; do
     if bash -c "echo > /dev/tcp/127.0.0.1/${WS_PORT}" 2>/dev/null || \
        bash -c "echo > /dev/tcp/0.0.0.0/${WS_PORT}" 2>/dev/null; then
-        echo "[entrypoint] Daemon is listening on port ${WS_PORT}"
+        echo "[entrypoint] ✓ Daemon is listening on port ${WS_PORT}"
+        echo "[entrypoint] ✓ READY FOR HERMES / external WebSocket clients"
+        echo "[entrypoint]   Connect using: ws://escaping-network-simplex-chat_app_1:${WS_PORT}"
         break
     fi
     sleep 1

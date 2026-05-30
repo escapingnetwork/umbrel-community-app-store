@@ -235,6 +235,13 @@
                     Use Umbrel's Terminal app:<br>
                     <span class="font-mono text-xs bg-black px-1.5 py-px rounded">docker exec -it escaping-network-simplex-chat_app_1 simplex-chat -d /data/simplex</span>
                 </p>
+                <div class="mt-3 pt-3 border-t border-zinc-800 text-[10px] text-amber-300">
+                    <strong>If Hermes says "cannot reach daemon":</strong><br>
+                    1. From Hermes container:<br>
+                    <span class="font-mono">docker exec -it &lt;hermes&gt; sh -c 'nc -zv escaping-network-simplex-chat_app_1 5225; echo "Exit code: $?"'</span><br>
+                    2. Inside this container, check what's listening:<br>
+                    <span class="font-mono">docker exec -it escaping-network-simplex-chat_app_1 sh -c 'ss -tlnp | grep 5225; ps aux | grep simplex'</span>
+                </div>
             </div>
         </div>
 
