@@ -5,7 +5,7 @@ services:
     environment:
       APP_HOST: escaping-network-simplex-relay_web_1
       APP_PORT: "8080"
-      PROXY_AUTH_ADD: "false"   # Dashboard is informational + has its own light auth later if needed
+      PROXY_AUTH_ADD: "false"
 
   smp:
     image: simplexchat/smp-server:latest
@@ -14,10 +14,6 @@ services:
     volumes:
       - ${APP_DATA_DIR}/smp/config:/etc/opt/simplex
       - ${APP_DATA_DIR}/smp/state:/var/opt/simplex
-    # Ports are intentionally not published to the host.
-    # Access via Tailscale (recommended) or manually exposed if desired.
-    networks:
-      - default
 
   xftp:
     image: simplexchat/xftp-server:latest
@@ -27,34 +23,27 @@ services:
       - ${APP_DATA_DIR}/xftp/config:/etc/opt/simplex-xftp
       - ${APP_DATA_DIR}/xftp/state:/var/opt/simplex-xftp
       - ${APP_DATA_DIR}/xftp/files:/srv/xftp
-    networks:
-      - default
 
   web:
-    # Go + HTMX dashboard with initialization wizard
-    # For production in the app store, publish the image and use:
-    # image: ghcr.io/escapingnetwork/simplex-relay-dashboard:latest@sha256:...
-    build:
-      context: ./dashboard
-      dockerfile: Dockerfile
+    # === PUBLISHED IMAGE VERSION (recommended for Umbrel) ===
+    # After the GitHub Actions workflow succeeds, update this line:
+    image: ghcr.io/escapingnetwork/simplex-relay-dashboard:latest
+    # image: ghcr.io/escapingnetwork/simplex-relay-dashboard:sha-xxxxxxx@sha256:...
+
+    # === BUILD VERSION (only use for local development/testing) ===
+    # build:
+    #   context: ./dashboard
+    #   dockerfile: Dockerfile
+
     restart: unless-stopped
     volumes:
-      # Mount config/state so the dashboard can read status and run init
       - ${APP_DATA_DIR}/smp/config:/etc/opt/simplex
       - ${APP_DATA_DIR}/smp/state:/var/opt/simplex
       - ${APP_DATA_DIR}/xftp/config:/etc/opt/simplex-xftp
       - ${APP_DATA_DIR}/xftp/state:/var/opt/simplex-xftp
       - ${APP_DATA_DIR}/xftp/files:/srv/xftp
     environment:
-      - PORT=8080
-      - APP_DATA_DIR=${APP_DATA_DIR}
+      PORT: 8080
     depends_on:
       - smp
       - xftp
-    networks:
-      - default
-
-networks:
-  default:
-    name: escaping-network-simplex-relay_default
-    driver: bridge
