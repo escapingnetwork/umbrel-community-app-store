@@ -8,13 +8,13 @@ services:
       PROXY_AUTH_ADD: "false"
 
   app:
-    # Published by GitHub Actions (latest successful run on bfe83e3)
-    image: ghcr.io/escapingnetwork/simplex-chat-daemon:sha-bfe83e3
+    # Published by GitHub Actions (latest successful run on cad9a2e - unbuffer + expect fix)
+    image: ghcr.io/escapingnetwork/simplex-chat-daemon:sha-cad9a2e
 
     # For maximum reproducibility, pin the full digest.
     # Go to https://github.com/escapingnetwork/packages/container/simplex-chat-daemon
     # → Click the tag → Copy the full digest and use:
-    # image: ghcr.io/escapingnetwork/simplex-chat-daemon:sha-bfe83e3@sha256:REPLACE_WITH_FULL_DIGEST
+    # image: ghcr.io/escapingnetwork/simplex-chat-daemon:sha-cad9a2e@sha256:REPLACE_WITH_FULL_DIGEST
 
     restart: on-failure
     stop_grace_period: 30s
