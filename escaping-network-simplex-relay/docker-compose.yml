@@ -3,7 +3,7 @@ version: "3.7"
 services:
   app_proxy:
     environment:
-      APP_HOST: escaping-network-simplex-relay_web_1
+      APP_HOST: web
       APP_PORT: "8080"
       PROXY_AUTH_ADD: "false"
 
