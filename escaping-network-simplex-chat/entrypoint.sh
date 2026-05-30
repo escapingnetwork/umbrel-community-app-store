@@ -16,15 +16,14 @@ echo "=================================================="
 mkdir -p "${DATA_DIR}"
 cd "${DATA_DIR}"
 
-# Auto-create bot profile on first run
+# Auto-create bot profile on first run (only if DB doesn't exist yet)
 if [ ! -f "${DATA_DIR}/simplex_v1_chat.db" ]; then
     echo "[entrypoint] No existing database found. Creating bot profile..."
     /usr/local/bin/simplex-chat \
         -d "${DATA_DIR}" \
         --create-bot-display-name "Hermes Gateway" \
-        --create-bot-allow-files \
-        +RTS -M1G -RTS || true
-    sleep 2
+        --create-bot-allow-files || true
+    sleep 3
 fi
 
 # Start sidecar services in background
@@ -36,10 +35,15 @@ echo "[entrypoint] Starting web dashboard on 0.0.0.0:${WEB_PORT}..."
 cd /app/web
 python3 -m http.server "${WEB_PORT}" &
 
-# Run the main simplex-chat daemon in the foreground.
-# This is what keeps the container alive.
-echo "[entrypoint] Starting simplex-chat daemon..."
-exec /usr/local/bin/simplex-chat \
-    -d "${DATA_DIR}" \
-    -p ${WS_PORT} \
-    +RTS -M1G -RTS
+# Run simplex-chat in a resilient loop.
+# The prebuilt binary sometimes exits; this keeps the container alive
+# and makes debugging much easier.
+echo "[entrypoint] Starting simplex-chat daemon (with auto-restart)..."
+while true; do
+    /usr/local/bin/simplex-chat \
+        -d "${DATA_DIR}" \
+        -p ${WS_PORT} || true
+
+    echo "[entrypoint] simplex-chat exited. Restarting in 5 seconds..."
+    sleep 5
+done
