@@ -40,10 +40,14 @@ COPY --from=xftp-bin /usr/local/bin/xftp-server /usr/local/bin/xftp-server
 # Copy our Go binary
 COPY --from=builder /dashboard /usr/local/bin/dashboard
 
+# Copy restart wrapper
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
 # Create directories that will be mounted
 RUN mkdir -p /etc/opt/simplex /var/opt/simplex \
              /etc/opt/simplex-xftp /var/opt/simplex-xftp /srv/xftp
 
 EXPOSE 8080
 
-ENTRYPOINT ["/usr/local/bin/dashboard"]
+ENTRYPOINT ["/entrypoint.sh"]
