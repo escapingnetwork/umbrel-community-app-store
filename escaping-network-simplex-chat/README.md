@@ -39,7 +39,7 @@ The Relay app exports:
 ## Accessing the Daemon from Terminal (advanced)
 
 ```bash
-docker exec -it escaping-network-simplex-chat_app_1 simplex-chat -d /data
+docker exec -it escaping-network-simplex-chat_app_1 simplex-chat -d /data/simplex
 ```
 
 ## Images

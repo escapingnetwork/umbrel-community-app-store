@@ -65,7 +65,7 @@ RUN chmod +x /app/entrypoint.sh
 EXPOSE 5225 8080
 
 # Healthcheck: verify both the proxy port is listening and simplex-chat process can respond to basic commands
-HEALTHCHECK --interval=30s --timeout=10s --start-period=25s --retries=3 \
+HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
     CMD socat -u OPEN:/dev/null TCP:127.0.0.1:5225,connect-timeout=3 || exit 1
 
 # Run as root so entrypoint can do mkdir/chown on mounted volumes.

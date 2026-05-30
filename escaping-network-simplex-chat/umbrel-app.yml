@@ -2,7 +2,7 @@ manifestVersion: 1
 id: escaping-network-simplex-chat
 category: developer
 name: SimpleX Gateway
-version: "0.1.0"
+version: "0.1.1"
 tagline: Headless SimpleX Chat daemon for Hermes Agent and bots
 description: >-
   Runs SimpleX Chat as a private, headless daemon with the official JSON WebSocket API exposed on the internal Docker network.
@@ -12,15 +12,21 @@ description: >-
   Features:
   - Automatic bot profile creation ("Hermes Gateway")
   - Files allowed
-  - WebSocket JSON API reachable by other Umbrel apps (ws://simplex-chat_app_1:5225)
+  - WebSocket JSON API reachable by other Umbrel apps (ws://escaping-network-simplex-chat_app_1:5225)
   - Clean web dashboard with connection instructions
   - Persistent encrypted database
 
   SimpleX provides state-of-the-art metadata resistance — no phone numbers, emails, or persistent user IDs.
 
 releaseNotes: >-
-  Initial release for Umbrel.
+  0.1.1: Robust gateway fixes so the WebSocket API is reliably reachable by other apps (e.g. Hermes Agent).
 
+  - Fixed socat proxy startup order + added readiness wait + auto-restart for the proxy (the core "escaping network" fix)
+  - Corrected all internal Docker hostnames to escaping-network-simplex-chat_app_1 (exports, dashboard, docs, proxy config)
+  - Fixed docker exec examples to use the correct data dir (-d /data/simplex)
+  - Improved entrypoint logging and reliability for the JSON WS daemon + proxy
+
+  0.1.0 (initial):
   - Packages simplex-chat CLI as a reliable daemon
   - socat-based proxy so other containers can connect
   - Auto-creates a bot profile on first start
