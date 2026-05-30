@@ -18,6 +18,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     python3 \
     dumb-init \
     file \
+    gosu \
     && rm -rf /var/lib/apt/lists/*
 
 # Create non-root user for better security
@@ -65,8 +66,8 @@ EXPOSE 5225 8080
 HEALTHCHECK --interval=30s --timeout=10s --start-period=25s --retries=3 \
     CMD socat -u OPEN:/dev/null TCP:127.0.0.1:5225,connect-timeout=3 || exit 1
 
-USER simplex
-
+# Run as root so entrypoint can do mkdir/chown on mounted volumes.
+# We drop privileges using gosu for the actual processes.
 # Use dumb-init for proper signal handling (important for graceful shutdown)
 ENTRYPOINT ["/usr/bin/dumb-init", "--"]
 CMD ["/app/entrypoint.sh"]
