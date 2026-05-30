@@ -44,13 +44,30 @@ echo "[entrypoint] Starting web dashboard early on 0.0.0.0:${WEB_PORT} (backgrou
 ) &
 WEB_PID=$!
 
-# Bot profile creation happens here (with strong protection).
-# We deliberately start the daemon loop *after* this block so the long
-# first-run migration doesn't cause concurrent DB access fights.
+# Start the daemon restart loop *early* in background.
+# This is the core of the gateway. It must run independently of the (optional)
+# one-time profile creation.
+(
+  echo "[entrypoint] Starting simplex-chat daemon (with auto-restart)..."
+  RESTART_DELAY=5
+  while true; do
+      cleanup_stuck_processes
+      yes y | TERM=dumb unbuffer -p gosu simplex /usr/local/bin/simplex-chat \
+          -d "${DATA_DIR}" \
+          -p ${WS_PORT} || true
+
+      echo "[entrypoint] simplex-chat exited (divide by zero or other transient?). Restarting in ${RESTART_DELAY}s..."
+      sleep $RESTART_DELAY
+
+      RESTART_DELAY=$((RESTART_DELAY * 2))
+      if [ $RESTART_DELAY -gt 60 ]; then
+          RESTART_DELAY=60
+      fi
+  done
+) &
 
 # One-time bot profile creation — run in background with its own hard timeout.
-# This is the most reliable pattern we've found: the main script (and daemon loop)
-# never waits for it. The daemon loop itself is what actually makes the gateway usable.
+# This is best-effort and must never block the daemon loop.
 if [ ! -f "${DATA_DIR}/simplex_chat.db" ] && [ ! -f "${DATA_DIR}/simplex_agent.db" ] && \
    [ ! -f "/data/simplex_chat.db" ] && [ ! -f "/data/simplex_agent.db" ]; then
     (
