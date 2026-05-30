@@ -23,11 +23,12 @@ cd "${DATA_DIR}"
 # One-time bot profile creation (only if DB doesn't exist)
 if [ ! -f "${DATA_DIR}/simplex_v1_chat.db" ]; then
     echo "[entrypoint] No existing database found. Creating bot profile..."
-    # Use 'script' here too, because the creation path can also trigger the terminal library
-    TERM=dumb script -q -c "gosu simplex /usr/local/bin/simplex-chat \
-        -d '${DATA_DIR}' \
-        --create-bot-display-name 'Hermes Gateway' \
-        --create-bot-allow-files" /dev/null || true
+    # Use unbuffer (from expect) + TERM=dumb. This is the most reliable way
+    # to prevent the terminal library crash during profile creation.
+    TERM=dumb unbuffer -p gosu simplex /usr/local/bin/simplex-chat \
+        -d "${DATA_DIR}" \
+        --create-bot-display-name "Hermes Gateway" \
+        --create-bot-allow-files || true
     sleep 5
 fi
 
@@ -41,11 +42,13 @@ cd /app/web
 python3 -m http.server "${WEB_PORT}" &
 
 # Run simplex-chat in a restart loop.
-# We use `script` to fake a TTY (prevents Prelude.undefined terminal crash in Docker)
-# and TERM=dumb for extra safety.
+# We use `unbuffer` + TERM=dumb. This is the recommended way to run
+# simplex-chat headlessly in Docker without triggering the terminal library.
 echo "[entrypoint] Starting simplex-chat daemon (with auto-restart)..."
 while true; do
-    TERM=dumb script -q -c "gosu simplex /usr/local/bin/simplex-chat -d '${DATA_DIR}' -p ${WS_PORT}" /dev/null || true
+    TERM=dumb unbuffer -p gosu simplex /usr/local/bin/simplex-chat \
+        -d "${DATA_DIR}" \
+        -p ${WS_PORT} || true
 
     echo "[entrypoint] simplex-chat exited. Restarting in 5 seconds..."
     sleep 5

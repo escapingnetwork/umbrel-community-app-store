@@ -20,6 +20,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     file \
     gosu \
     bsdutils \
+    expect \
     && rm -rf /var/lib/apt/lists/*
 
 # Create non-root user for better security
