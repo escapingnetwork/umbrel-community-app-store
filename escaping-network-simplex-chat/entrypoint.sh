@@ -20,20 +20,31 @@ chown -R simplex:simplex /data 2>/dev/null || true
 
 cd "${DATA_DIR}"
 
-# One-time bot profile creation (only if DB doesn't exist)
-if [ ! -f "${DATA_DIR}/simplex_v1_chat.db" ]; then
+# Start the web dashboard *early* in the background so the Umbrel "Open" button
+# (and app_proxy) can connect immediately. This prevents "connection refused"
+# while the (potentially slow or crashy) daemon + bot creation + port wait happens.
+echo "[entrypoint] Starting web dashboard early on 0.0.0.0:${WEB_PORT} (background)..."
+(
+  cd /app/web
+  python3 -m http.server "${WEB_PORT}" >>/tmp/webserver.log 2>&1
+) &
+WEB_PID=$!
+
+# One-time bot profile creation (only if no modern DB exists).
+# Note: simplex-chat v6.5.3+ uses simplex_chat.db + simplex_agent.db (not the old simplex_v1_chat.db).
+if [ ! -f "${DATA_DIR}/simplex_chat.db" ] && [ ! -f "${DATA_DIR}/simplex_agent.db" ]; then
     echo "[entrypoint] No existing database found. Creating bot profile..."
     # Use unbuffer + TERM=dumb, and pipe "y" in case it ever prompts during creation.
     yes y | TERM=dumb unbuffer -p gosu simplex /usr/local/bin/simplex-chat \
         -d "${DATA_DIR}" \
         --create-bot-display-name "Hermes Gateway" \
         --create-bot-allow-files || true
-    sleep 5
+    sleep 3
 fi
 
 # Start a background process that keeps restarting the simplex-chat daemon
-# with exponential backoff. This reduces log spam when the binary hits
-# transient crashes (like the "divide by zero" in v6.5.2.0; we are now running 6.5.3).
+# with exponential backoff. "divide by zero" and other transient crashes have
+# been observed even in 6.5.3 during certain startup paths.
 (
   echo "[entrypoint] Starting simplex-chat daemon (with auto-restart)..."
   RESTART_DELAY=5
@@ -42,7 +53,7 @@ fi
           -d "${DATA_DIR}" \
           -p ${WS_PORT} || true
 
-      echo "[entrypoint] simplex-chat exited. Restarting in ${RESTART_DELAY}s..."
+      echo "[entrypoint] simplex-chat exited (divide by zero or other transient?). Restarting in ${RESTART_DELAY}s..."
       sleep $RESTART_DELAY
 
       # Exponential backoff, max 60s
@@ -53,10 +64,9 @@ fi
   done
 ) &
 
-# Wait for the daemon's localhost listener (it binds only to 127.0.0.1 by design for security).
-# The socat proxy will then expose it on 0.0.0.0 so other Docker containers can reach it
-# via the container's DNS name on the Umbrel network (e.g. escaping-network-simplex-chat_app_1:5225).
-echo "[entrypoint] Waiting for simplex-chat to listen on 127.0.0.1:${WS_PORT}..."
+# Wait (with timeout) for the daemon's localhost listener so we can bring up the
+# socat proxy for other containers. This no longer blocks the web UI.
+echo "[entrypoint] Waiting (max 45s) for simplex-chat to listen on 127.0.0.1:${WS_PORT}..."
 for i in {1..45}; do
     if bash -c "echo > /dev/tcp/127.0.0.1/${WS_PORT}" 2>/dev/null; then
         echo "[entrypoint] Daemon ready on 127.0.0.1:${WS_PORT}"
@@ -64,7 +74,7 @@ for i in {1..45}; do
     fi
     sleep 1
     if [ "$i" -eq 45 ]; then
-        echo "[entrypoint] WARNING: Daemon port not detected after 45s, starting proxy anyway (may fail until daemon binds)"
+        echo "[entrypoint] WARNING: Daemon port not detected after 45s. WS gateway may not be ready yet for other apps (Hermes etc.). Web UI is still available."
     fi
 done
 
@@ -80,8 +90,10 @@ done
   done
 ) &
 
-# Run the web dashboard in the foreground.
-# This is what keeps the container alive and allows the Umbrel proxy to connect.
-echo "[entrypoint] Starting web dashboard on 0.0.0.0:${WEB_PORT}..."
+# Keep the container alive. The early web server is already running in background.
+# If it ever dies, fall back to exec'ing it again (should not happen).
+echo "[entrypoint] Web dashboard should already be reachable on :${WEB_PORT}. Keeping container alive..."
+wait $WEB_PID || true
+echo "[entrypoint] Web server exited, restarting it..."
 cd /app/web
 exec python3 -m http.server "${WEB_PORT}"
