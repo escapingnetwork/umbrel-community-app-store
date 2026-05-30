@@ -4,7 +4,8 @@ set -euo pipefail
 # SimpleX Chat Daemon + Gateway Proxy + Web UI for Umbrel
 # Designed specifically as a gateway for Hermes Agent (Nous Research)
 
-DATA_DIR="${SIMPLEX_DATA_DIR:-/data}"
+# Use a subdirectory so database files are nicely namespaced inside the volume
+DATA_DIR="${SIMPLEX_DATA_DIR:-/data}/simplex"
 WS_PORT=5225
 WEB_PORT=8080
 
@@ -16,10 +17,10 @@ echo "=================================================="
 mkdir -p "${DATA_DIR}"
 cd "${DATA_DIR}"
 
-# Auto-create bot profile on first run (only if DB doesn't exist yet)
+# Auto-create bot profile on first run
 if [ ! -f "${DATA_DIR}/simplex_v1_chat.db" ]; then
     echo "[entrypoint] No existing database found. Creating bot profile..."
-    /usr/local/bin/simplex-chat \
+    TERM=dumb /usr/local/bin/simplex-chat \
         -d "${DATA_DIR}" \
         --create-bot-display-name "Hermes Gateway" \
         --create-bot-allow-files || true
@@ -35,12 +36,11 @@ echo "[entrypoint] Starting web dashboard on 0.0.0.0:${WEB_PORT}..."
 cd /app/web
 python3 -m http.server "${WEB_PORT}" &
 
-# Run simplex-chat in a resilient loop.
-# The prebuilt binary sometimes exits; this keeps the container alive
-# and makes debugging much easier.
+# Run the main daemon with TERM=dumb to avoid terminal library crashes in Docker,
+# and wrap in a loop so the container stays alive even if it temporarily exits.
 echo "[entrypoint] Starting simplex-chat daemon (with auto-restart)..."
 while true; do
-    /usr/local/bin/simplex-chat \
+    TERM=dumb /usr/local/bin/simplex-chat \
         -d "${DATA_DIR}" \
         -p ${WS_PORT} || true
 
