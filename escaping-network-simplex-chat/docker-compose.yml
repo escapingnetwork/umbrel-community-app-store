@@ -8,14 +8,11 @@ services:
       PROXY_AUTH_ADD: "false"
 
   app:
-    # Published by GitHub Actions (multi-arch)
-    # After the next workflow run (6.5.3 binary + robust entrypoint), update this tag.
-    image: ghcr.io/escapingnetwork/simplex-chat-daemon:sha-672a656
+    # Fully pinned digest from GitHub Actions (multi-arch build after 6.5.3 + robust entrypoint)
+    image: ghcr.io/escapingnetwork/simplex-chat-daemon@sha256:1ed4ada9f0348e45dcd5da4d6632df0a4d34e1d90a1d2f7c26cb2d2ed61e1bfe
 
-    # For maximum reproducibility, pin the full digest.
-    # Go to https://github.com/escapingnetwork/packages/container/simplex-chat-daemon
-    # → Click the tag → Copy the full digest and use:
-    # image: ghcr.io/escapingnetwork/simplex-chat-daemon:sha-XXXXXX@sha256:full-digest-here
+    # Optional: tag + digest form (the sha- tag from the workflow run)
+    # image: ghcr.io/escapingnetwork/simplex-chat-daemon:sha-XXXX@sha256:1ed4ada9f0348e45dcd5da4d6632df0a4d34e1d90a1d2f7c26cb2d2ed61e1bfe
 
     restart: on-failure
     stop_grace_period: 30s

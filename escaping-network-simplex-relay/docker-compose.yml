@@ -36,14 +36,11 @@ services:
       - ${APP_DATA_DIR}/xftp/files:/srv/xftp
 
   web:
-    # Published by GitHub Actions (latest successful run on 81c8aad - relay dashboard resilience)
-    # Using the sha tag is more stable than 'latest' for Umbrel apps
-    image: ghcr.io/escapingnetwork/simplex-relay-dashboard:sha-81c8aad
+    # Fully pinned digest from GitHub Actions (multi-arch)
+    image: ghcr.io/escapingnetwork/simplex-relay-dashboard@sha256:95c0cfbf353c0186528c24d0bc425734763e724392a56e2ee9aa889afe9d0de4
 
-    # For maximum reproducibility (recommended for Umbrel), pin the full digest.
-    # Go to https://github.com/escapingnetwork/packages/container/simplex-relay-dashboard
-    # → Click the tag → Copy the full digest and use:
-    # image: ghcr.io/escapingnetwork/simplex-relay-dashboard:sha-81c8aad@sha256:REPLACE_WITH_FULL_DIGEST
+    # Optional: tag + digest form for readability
+    # image: ghcr.io/escapingnetwork/simplex-relay-dashboard:sha-XXXX@sha256:95c0cfbf353c0186528c24d0bc425734763e724392a56e2ee9aa889afe9d0de4
 
     restart: unless-stopped
     volumes:
