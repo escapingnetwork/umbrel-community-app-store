@@ -17,6 +17,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     socat \
     python3 \
     python3-websockets \
+    python3-qrcode \
     dumb-init \
     file \
     gosu \

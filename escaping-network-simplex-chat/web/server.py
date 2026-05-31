@@ -7,18 +7,21 @@ SimpleX Gateway Web Server
 """
 
 import asyncio
+import base64
+import io
 import json
 import os
 import time
 from http.server import HTTPServer, SimpleHTTPRequestHandler
 from threading import Thread
+import qrcode
 import websockets
 
 WEB_DIR = "/app/web"
 DAEMON_WS = "ws://127.0.0.1:5226"
 
 # Cache the address for a while
-_address_cache = {"address": None, "timestamp": 0}
+_address_cache = {"address": None, "qr_svg": None, "timestamp": 0}
 CACHE_TTL = 30  # seconds
 
 
@@ -60,12 +63,36 @@ async def get_my_address():
     return None
 
 
+def generate_qr_svg(address: str) -> str:
+    """Generate a clean SVG QR code as a data URL."""
+    if not address:
+        return ""
+    qr = qrcode.QRCode(
+        version=1,
+        error_correction=qrcode.constants.ERROR_CORRECT_M,
+        box_size=8,
+        border=2,
+    )
+    qr.add_data(address)
+    qr.make(fit=True)
+
+    img = qr.make_image(fill_color="black", back_color="white")
+
+    # Use SVG
+    svg_buffer = io.StringIO()
+    img.save(svg_buffer, kind='SVG')
+    svg_str = svg_buffer.getvalue()
+
+    # Make it a data URL
+    svg_base64 = base64.b64encode(svg_str.encode('utf-8')).decode('ascii')
+    return f"data:image/svg+xml;base64,{svg_base64}"
+
+
 def get_cached_address():
     now = time.time()
     if _address_cache["address"] and (now - _address_cache["timestamp"] < CACHE_TTL):
-        return _address_cache["address"]
+        return _address_cache["address"], _address_cache["qr_svg"]
 
-    # Run the async function in a new event loop (simple but effective for this use case)
     try:
         loop = asyncio.new_event_loop()
         address = loop.run_until_complete(get_my_address())
@@ -73,10 +100,14 @@ def get_cached_address():
     except Exception:
         address = None
 
+    qr_svg = generate_qr_svg(address) if address else ""
+
     if address:
         _address_cache["address"] = address
+        _address_cache["qr_svg"] = qr_svg
         _address_cache["timestamp"] = now
-    return _address_cache["address"]
+
+    return address, qr_svg
 
 
 class GatewayHandler(SimpleHTTPRequestHandler):
@@ -90,9 +121,10 @@ class GatewayHandler(SimpleHTTPRequestHandler):
             self.send_header("Access-Control-Allow-Origin", "*")
             self.end_headers()
 
-            address = get_cached_address()
+            address, qr_svg = get_cached_address()
             data = {
                 "address": address,
+                "qr_svg": qr_svg,
                 "ready": address is not None
             }
             self.wfile.write(json.dumps(data).encode())

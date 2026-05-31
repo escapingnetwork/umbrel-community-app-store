@@ -220,17 +220,29 @@
 
             <div id="address-section">
                 <div class="text-sm text-zinc-400 mb-3">
-                    Scan or click the link below on your SimpleX app to add the <strong>Hermes Gateway</strong> bot.
+                    Scan the QR or click the link on your SimpleX app to add the <strong>Hermes Gateway</strong> bot.
                 </div>
                 <div id="address-loading" class="text-xs text-zinc-500">Loading address from daemon...</div>
                 <div id="address-content" class="hidden">
-                    <a id="address-link"
-                       href="#"
-                       target="_blank"
-                       class="block bg-black border border-zinc-700 hover:border-emerald-500/50 transition-colors rounded-2xl p-4 font-mono text-sm break-all text-emerald-300">
-                    </a>
-                    <div class="mt-2 text-[10px] text-zinc-500">
-                        Tip: On your phone, open the link or scan the QR from the SimpleX app.
+                    <div class="flex flex-col md:flex-row gap-6 items-start">
+                        <!-- QR Code -->
+                        <div class="bg-white p-3 rounded-2xl shadow-inner flex-shrink-0">
+                            <img id="address-qr"
+                                 alt="SimpleX Gateway QR Code"
+                                 class="w-48 h-48 md:w-40 md:h-40" />
+                        </div>
+
+                        <!-- Link -->
+                        <div class="flex-1 min-w-0">
+                            <a id="address-link"
+                               href="#"
+                               target="_blank"
+                               class="block bg-black border border-zinc-700 hover:border-emerald-500/50 transition-colors rounded-2xl p-4 font-mono text-xs break-all text-emerald-300 hover:text-emerald-200">
+                            </a>
+                            <div class="mt-2 text-[10px] text-zinc-500">
+                                Long-press the link on your phone → Open in SimpleX
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -287,6 +299,7 @@
             const loading = document.getElementById('address-loading');
             const content = document.getElementById('address-content');
             const link = document.getElementById('address-link');
+            const qr = document.getElementById('address-qr');
 
             try {
                 const res = await fetch('/api/address');
@@ -294,7 +307,14 @@
 
                 if (data.ready && data.address) {
                     link.textContent = data.address;
-                    link.href = data.address.startsWith('http') ? data.address : 'https://simplex.chat/contact#' + encodeURIComponent(data.address);
+                    link.href = data.address.startsWith('http') 
+                        ? data.address 
+                        : 'https://simplex.chat/contact#' + encodeURIComponent(data.address);
+
+                    if (data.qr_svg) {
+                        qr.src = data.qr_svg;
+                    }
+
                     loading.classList.add('hidden');
                     content.classList.remove('hidden');
                 } else {

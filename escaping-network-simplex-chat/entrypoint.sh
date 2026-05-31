@@ -57,19 +57,28 @@ WEB_PID=$!
 # one-time profile creation.
 (
   echo "[entrypoint] Starting simplex-chat daemon (with auto-restart)..."
-  RESTART_DELAY=5
+  RESTART_DELAY=8
+  CONSECUTIVE_CRASHES=0
   while true; do
       cleanup_stuck_processes
-      yes y | TERM=dumb unbuffer -p gosu simplex /usr/local/bin/simplex-chat \
+      yes y | TERM=dumb unbuffer -p nice -n 10 gosu simplex /usr/local/bin/simplex-chat \
           -d "${DATA_DIR}" \
           -p ${INTERNAL_WS_PORT} || true
 
-      echo "[entrypoint] simplex-chat exited (divide by zero or other transient?). Restarting in ${RESTART_DELAY}s..."
+      CONSECUTIVE_CRASHES=$((CONSECUTIVE_CRASHES + 1))
+      echo "[entrypoint] simplex-chat exited (divide by zero or other transient?). Restarting in ${RESTART_DELAY}s... (crash #$CONSECUTIVE_CRASHES)"
+
       sleep $RESTART_DELAY
 
-      RESTART_DELAY=$((RESTART_DELAY * 2))
-      if [ $RESTART_DELAY -gt 60 ]; then
-          RESTART_DELAY=60
+      # More aggressive backoff when we see repeated "divide by zero" / crashes
+      if [ $CONSECUTIVE_CRASHES -ge 3 ]; then
+          RESTART_DELAY=$((RESTART_DELAY * 2))
+      else
+          RESTART_DELAY=$((RESTART_DELAY + 4))
+      fi
+
+      if [ $RESTART_DELAY -gt 120 ]; then
+          RESTART_DELAY=120
       fi
   done
 ) &
@@ -85,7 +94,7 @@ if [ ! -f "${DATA_DIR}/simplex_chat.db" ] && [ ! -f "${DATA_DIR}/simplex_agent.d
         set +e
         timeout --kill-after=10 80 bash -c '
             set -euo pipefail
-            yes y | TERM=dumb unbuffer -p gosu simplex /usr/local/bin/simplex-chat \
+            yes y | TERM=dumb unbuffer -p nice -n 10 gosu simplex /usr/local/bin/simplex-chat \
                 -d "'"${DATA_DIR}"'" \
                 --create-bot-display-name "Hermes Gateway" \
                 --create-bot-allow-files
