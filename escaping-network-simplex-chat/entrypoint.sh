@@ -45,10 +45,10 @@ cd "${DATA_DIR}"
 
 # Start the web dashboard *early* in the background so the Umbrel "Open" button
 # (and app_proxy) can connect immediately.
+# Uses a custom server that can also query the daemon for the contact address.
 echo "[entrypoint] Starting web dashboard early on 0.0.0.0:${WEB_PORT} (background)..."
 (
-  cd /app/web
-  python3 -m http.server "${WEB_PORT}" >>/tmp/webserver.log 2>&1
+  python3 /app/web/server.py >>/tmp/webserver.log 2>&1
 ) &
 WEB_PID=$!
 

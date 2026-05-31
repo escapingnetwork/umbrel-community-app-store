@@ -206,6 +206,36 @@
             </div>
         </div>
 
+        <!-- Contact from Phone -->
+        <div class="bg-zinc-900 border border-zinc-800 rounded-3xl p-7 mb-8">
+            <div class="flex items-center gap-x-3 mb-4">
+                <div class="w-9 h-9 rounded-2xl bg-emerald-500/10 flex items-center justify-center">
+                    <i class="fa-solid fa-qrcode text-emerald-400"></i>
+                </div>
+                <div>
+                    <div class="section-header text-emerald-400">Contact from your phone</div>
+                    <div class="font-semibold text-lg tracking-tight">Add this Gateway directly</div>
+                </div>
+            </div>
+
+            <div id="address-section">
+                <div class="text-sm text-zinc-400 mb-3">
+                    Scan or click the link below on your SimpleX app to add the <strong>Hermes Gateway</strong> bot.
+                </div>
+                <div id="address-loading" class="text-xs text-zinc-500">Loading address from daemon...</div>
+                <div id="address-content" class="hidden">
+                    <a id="address-link"
+                       href="#"
+                       target="_blank"
+                       class="block bg-black border border-zinc-700 hover:border-emerald-500/50 transition-colors rounded-2xl p-4 font-mono text-sm break-all text-emerald-300">
+                    </a>
+                    <div class="mt-2 text-[10px] text-zinc-500">
+                        Tip: On your phone, open the link or scan the QR from the SimpleX app.
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Advanced / Notes -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
             <div class="bg-zinc-900 border border-zinc-800 rounded-3xl p-6">
@@ -251,5 +281,36 @@
             Built for <a href="https://umbrel.com" target="_blank" class="underline hover:text-zinc-400">Umbrel</a>
         </div>
     </div>
+
+    <script>
+        async function loadAddress() {
+            const loading = document.getElementById('address-loading');
+            const content = document.getElementById('address-content');
+            const link = document.getElementById('address-link');
+
+            try {
+                const res = await fetch('/api/address');
+                const data = await res.json();
+
+                if (data.ready && data.address) {
+                    link.textContent = data.address;
+                    link.href = data.address.startsWith('http') ? data.address : 'https://simplex.chat/contact#' + encodeURIComponent(data.address);
+                    loading.classList.add('hidden');
+                    content.classList.remove('hidden');
+                } else {
+                    loading.textContent = 'Address not available yet. The daemon may still be initializing.';
+                }
+            } catch (e) {
+                loading.textContent = 'Could not load address. Try refreshing in a minute.';
+            }
+        }
+
+        // Load on page ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', loadAddress);
+        } else {
+            loadAddress();
+        }
+    </script>
 </body>
 </html>
