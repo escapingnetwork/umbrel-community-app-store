@@ -15,7 +15,57 @@ env:
   IMAGE_OWNER: escapingnetwork
 
 jobs:
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      include: ${{ steps.matrix.outputs.include }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Detect changed components
+        id: filter
+        uses: dorny/paths-filter@v3
+        with:
+          filters: |
+            chat:
+              - 'escaping-network-simplex-chat/Dockerfile'
+              - 'escaping-network-simplex-chat/entrypoint.sh'
+              - '.github/workflows/build-simplex-images.yml'
+            relay:
+              - 'escaping-network-simplex-relay/dashboard/**'
+              - '.github/workflows/build-simplex-images.yml'
+
+      - name: Build dynamic matrix
+        id: matrix
+        run: |
+          MATRIX="[]"
+
+          if [[ "${{ steps.filter.outputs.chat }}" == "true" || "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            MATRIX=$(echo "$MATRIX" | jq '. += [{
+              "name": "simplex-chat-daemon",
+              "context": "escaping-network-simplex-chat",
+              "dockerfile": "escaping-network-simplex-chat/Dockerfile",
+              "image": "ghcr.io/escapingnetwork/simplex-chat-daemon"
+            }]')
+          fi
+
+          if [[ "${{ steps.filter.outputs.relay }}" == "true" || "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            MATRIX=$(echo "$MATRIX" | jq '. += [{
+              "name": "simplex-relay-dashboard",
+              "context": "escaping-network-simplex-relay/dashboard",
+              "dockerfile": "escaping-network-simplex-relay/dashboard/Dockerfile",
+              "image": "ghcr.io/escapingnetwork/simplex-relay-dashboard"
+            }]')
+          fi
+
+          echo "include=$(echo "$MATRIX" | jq -c .)" >> $GITHUB_OUTPUT
+
   build-and-push:
+    needs: changes
+    if: needs.changes.outputs.include != '[]'
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -23,15 +73,7 @@ jobs:
 
     strategy:
       matrix:
-        include:
-          - name: simplex-relay-dashboard
-            context: escaping-network-simplex-relay/dashboard
-            dockerfile: escaping-network-simplex-relay/dashboard/Dockerfile
-            image: ghcr.io/escapingnetwork/simplex-relay-dashboard
-          - name: simplex-chat-daemon
-            context: escaping-network-simplex-chat
-            dockerfile: escaping-network-simplex-chat/Dockerfile
-            image: ghcr.io/escapingnetwork/simplex-chat-daemon
+        include: ${{ fromJSON(needs.changes.outputs.include) }}
 
     steps:
       - name: Checkout
