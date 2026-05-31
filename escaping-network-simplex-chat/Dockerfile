@@ -4,6 +4,13 @@
 ARG UBUNTU_VERSION=22.04
 FROM ubuntu:${UBUNTU_VERSION}
 
+# Prevent interactive prompts during package installation (tzdata, etc.)
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Pre-configure timezone to avoid tzdata prompts
+RUN ln -fs /usr/share/zoneinfo/Etc/UTC /etc/localtime && \
+    echo "Etc/UTC" > /etc/timezone
+
 LABEL org.opencontainers.image.title="SimpleX Chat Gateway"
 LABEL org.opencontainers.image.description="Headless SimpleX Chat daemon with JSON API for Hermes Agent on Umbrel"
 LABEL org.opencontainers.image.source="https://github.com/escapingnetwork/umbrel-community-app-store"
