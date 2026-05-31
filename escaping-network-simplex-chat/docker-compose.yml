@@ -9,10 +9,10 @@ services:
 
   app:
     # Fully pinned digest from GitHub Actions (multi-arch).
-    image: ghcr.io/escapingnetwork/simplex-chat-daemon@sha256:5eefec1cad493fbf4c32133dd63ecdebc0f369e9b1f58500f0c7852e7c109c46
+    image: ghcr.io/escapingnetwork/simplex-chat-daemon@sha256:0269457ef58aa78bea10d9db289622a730b0aedd419234ab3e01aa4d4c826c57
 
     # Optional: tag + digest form (the sha- tag from the workflow run for this commit)
-    # image: ghcr.io/escapingnetwork/simplex-chat-daemon:sha-XXXX@sha256:5eefec1cad493fbf4c32133dd63ecdebc0f369e9b1f58500f0c7852e7c109c46
+    # image: ghcr.io/escapingnetwork/simplex-chat-daemon:sha-0aad184@sha256:0269457ef58aa78bea10d9db289622a730b0aedd419234ab3e01aa4d4c826c57
 
     restart: on-failure
     stop_grace_period: 30s
